@@ -277,11 +277,8 @@ public sealed class Dashboard : Bindable
                 if (snapshot.State != BotState.Running) return;
                 if (snapshot.CanStartGame)
                 {
-                    if (AutoClientlessAfterGame)
-                    {
-                        var clientless = await bots.EnableClientlessAfterGameAsync(account.Settings);
-                        if (!clientless.Success) Log(account.Name, "Warning", clientless.Message);
-                    }
+                    var clientless = await bots.SetClientlessAfterGameAsync(account.Settings, AutoClientlessAfterGame);
+                    if (!clientless.Success) Log(account.Name, "Warning", clientless.Message);
                     var result = await bots.StartGameAsync(account.Settings);
                     if (result.Success)
                     {
@@ -383,11 +380,11 @@ public sealed class Dashboard : Bindable
         foreach (var account in Accounts.Where(a => a.BulkEnabled && a.CanShowHideClient).ToArray())
             await RunAsync(account, () => bots.SetRelatedClientVisibilityAsync(account.Settings, visible));
     }
-    public async Task EnableAutomaticClientlessForRunningAsync()
+    public async Task SyncAutomaticClientlessForRunningAsync()
     {
-        if (!AutoClientlessAfterGame || !CanBulk) return;
-        foreach (var account in Accounts.Where(a => a.BulkEnabled && a.State == BotState.Running).ToArray())
-            await RunAsync(account, () => bots.EnableClientlessAfterGameAsync(account.Settings));
+        if (!CanBulk) return;
+        foreach (var account in Accounts.Where(a => a.State == BotState.Running).ToArray())
+            await RunAsync(account, () => bots.SetClientlessAfterGameAsync(account.Settings, AutoClientlessAfterGame));
     }
     public async Task GoClientlessAllAsync()
     {

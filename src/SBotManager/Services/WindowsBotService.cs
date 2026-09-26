@@ -128,7 +128,7 @@ public sealed class WindowsBotService : IBotService
             : new BotResult(false, "Start Game command could not be delivered (permissions or timeout). No further action taken.");
     });
 
-    public Task<BotResult> EnableClientlessAfterGameAsync(AccountSettings account) => Task.Run(() =>
+    public Task<BotResult> SetClientlessAfterGameAsync(AccountSettings account, bool enabled) => Task.Run(() =>
     {
         var found = Find(account);
         if (found.Identity is null) return new BotResult(false, "Clientless setting blocked: " + found.Snapshot.Detail);
@@ -137,12 +137,14 @@ public sealed class WindowsBotService : IBotService
         if (button == 0) return new BotResult(false, "Automatic clientless control unavailable. No fallback used.");
         using var again = Verified(found.Identity);
         if (!NativeWindows.OwnedBy(button, p.Id) || !NativeWindows.IsWindowEnabled(button)) return new BotResult(false, "Automatic clientless control changed. Action cancelled.");
-        // BM_GETCHECK avoids silently turning off a user-enabled sBot setting.
         if (NativeWindows.SendMessageTimeout(button, 0x00F0, 0, 0, 0x0002, 1500, out var checkedState) == 0)
             return new BotResult(false, "Automatic clientless state could not be read. No change made.");
-        if (checkedState != 0) return new BotResult(true, "Automatic clientless is already enabled in sBot.");
+        if ((checkedState != 0) == enabled)
+            return new BotResult(true, enabled ? "Automatic clientless is already enabled in sBot." : "Automatic clientless is already disabled in sBot.");
         var sent = NativeWindows.SendMessageTimeout(button, 0x00F5, 0, 0, 0x0002, 1500, out _) != 0;
-        return sent ? new BotResult(true, "Enabled sBot automatic clientless after game entry; its existing delay was preserved.")
+        return sent ? new BotResult(true, enabled
+                        ? "Enabled sBot automatic clientless after game entry; its existing delay was preserved."
+                        : "Disabled sBot automatic clientless after game entry; its existing delay was preserved.")
                     : new BotResult(false, "Automatic clientless command could not be delivered. No further action taken.");
     });
 

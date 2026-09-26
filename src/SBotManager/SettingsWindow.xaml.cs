@@ -45,7 +45,7 @@ public partial class SettingsWindow : Window
                 TerminateSessionBotsOnExitPreference.IsChecked == true,
                 StartupLaunchModePreference.SelectedIndex == 1 ? StartupLaunchMode.LaunchOneByOne : StartupLaunchMode.LaunchAll,
                 AutoClientlessAfterGamePreference.IsChecked == true);
-            await dashboard.EnableAutomaticClientlessForRunningAsync();
+            await dashboard.SyncAutomaticClientlessForRunningAsync();
             var notifications = dashboard.Notifications;
             dashboard.SetNotifications(notifications with
             {

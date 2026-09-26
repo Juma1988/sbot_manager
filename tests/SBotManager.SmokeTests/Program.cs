@@ -119,6 +119,9 @@ Check(launched.State == BotState.Running && launchFake.Hidden.ContainsKey(launch
     "Individual Launch keeps a disabled bulk account available and hides its related windows");
 await WaitUntilAsync(() => launchFake.GameStarts == 1, "automatic Start Game after Launch all");
 Check(launchFake.AutoClientless == 1, "Automatic clientless is enabled before Start Game for Manager launches");
+launchDashboard.SetPreferences(launchDashboard.CloseToTray, launchDashboard.AutoHideBots, launchDashboard.AutoHideClients, false, false, false, StartupLaunchMode.LaunchOneByOne, false);
+await launchDashboard.SyncAutomaticClientlessForRunningAsync();
+Check(launchFake.AutoClientless == 2, "Turning off automatic clientless synchronizes the native setting for running bots");
 
 var retryStore = new SettingsStore(Path.Combine(root, "delayed-game-start"));
 var retryFake = new FakeBots { GameStartFailClicks = 2 };
@@ -265,10 +268,11 @@ try
     Check((await native.StartGameAsync(config)).Success, "Native Start Game command delivered");
     await Task.Delay(200);
     Check(File.ReadAllLines(Path.Combine(fixtureDir, "commands.log")).SequenceEqual(new[] { "START", "STOP", "GAME" }), "Fixture independently confirms Start Game command");
-    Check((await native.EnableClientlessAfterGameAsync(config)).Success, "Native automatic clientless control delivered");
+    Check((await native.SetClientlessAfterGameAsync(config, true)).Success, "Native automatic clientless control delivered");
+    Check((await native.SetClientlessAfterGameAsync(config, false)).Success, "Native automatic clientless control can be disabled");
     Check((await native.GoClientlessAsync(config)).Success, "Native Go clientless command delivered");
     await Task.Delay(200);
-    Check(File.ReadAllLines(Path.Combine(fixtureDir, "commands.log")).SequenceEqual(new[] { "START", "STOP", "GAME", "AUTO_CLIENTLESS", "CLIENTLESS" }), "Fixture independently confirms clientless commands");
+    Check(File.ReadAllLines(Path.Combine(fixtureDir, "commands.log")).SequenceEqual(new[] { "START", "STOP", "GAME", "AUTO_CLIENTLESS", "AUTO_CLIENTLESS", "CLIENTLESS" }), "Fixture independently confirms clientless enable, disable, and immediate commands");
     Check(native.Inspect(config).State == BotState.Running, "Stop training leaves process running");
     Check((await native.SetVisibilityAsync(config, false)).Success && native.Inspect(config).WindowVisible == false, "Native hide bot window verified and stays running");
     Check((await native.SetVisibilityAsync(config, true)).Success, "Native show bot window restores fixture window");
@@ -314,7 +318,7 @@ sealed class FakeBots : IBotService
     public Task<BotResult> TrainingAsync(AccountSettings a, bool start) { if (start) { Starts++; Training.Add(a.Id); } else { Stops++; Training.Remove(a.Id); } return Task.FromResult(new BotResult(true, "Test training")); }
     public Task<BotResult> StartGameAsync(AccountSettings a) { GameStarts++;
         return Task.FromResult(new BotResult(Running.Contains(a.Id) && GameStartFailClicks-- <= 0, "Test start game")); }
-    public Task<BotResult> EnableClientlessAfterGameAsync(AccountSettings a) { AutoClientless++; return Task.FromResult(new BotResult(Running.Contains(a.Id), "Test automatic clientless")); }
+    public Task<BotResult> SetClientlessAfterGameAsync(AccountSettings a, bool enabled) { AutoClientless++; return Task.FromResult(new BotResult(Running.Contains(a.Id), "Test automatic clientless")); }
     public Task<BotResult> GoClientlessAsync(AccountSettings a) { GoClientless++; return Task.FromResult(new BotResult(Running.Contains(a.Id), "Test go clientless")); }
     public Task<BotResult> SetVisibilityAsync(AccountSettings a, bool visible) { if (visible) Hidden.Remove(a.Id); else Hidden[a.Id] = true; return Task.FromResult(new BotResult(true, "Test visibility")); }
     public Task<BotResult> SetRelatedClientVisibilityAsync(AccountSettings a, bool visible) { if (visible) ClientHidden.Remove(a.Id); else ClientHidden[a.Id] = true; return Task.FromResult(new BotResult(true, "Test client visibility")); }

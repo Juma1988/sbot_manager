@@ -14,11 +14,12 @@
 - Each account card's bottom action reads **Launch** for a stopped bot and **Terminate** for a verified running bot. Terminate uses normal close with force fallback; training controls remain separate.
 - Double-click an account avatar to exclude/include it in bulk actions. Disabled accounts are visibly dimmed, struck through, and labeled **DISABLED**, but retain individual controls.
 - The character workspace scrolls normally without showing a scrollbar; the **LIVE PROCESS CONTROLS** label has been removed.
+- Saving automatic clientless now synchronizes its native sBot setting both on and off for running bots; future Manager launches synchronize it before Start Game.
 
 ## Verification
 
-- Current source: `dotnet build` passed with zero warnings/errors after the workspace-scroll update.
-- Model/native fixture smoke checks: **93 passed**, including disabled-account persistence, bulk exclusion, and individual-launch availability.
+- Current source: `dotnet build` passed with zero warnings/errors after the automatic-clientless fix.
+- Model/native fixture smoke checks: **95 passed**, including automatic-clientless enable/disable synchronization.
 - Desktop UI smoke checks: **41 passed**, including scrollbar-free character-list scrolling.
 
 ## Remaining verification / limitations

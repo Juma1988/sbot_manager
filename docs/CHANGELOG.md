@@ -7,10 +7,11 @@
 - Added a persisted avatar double-click toggle for per-character bulk eligibility. Disabled cards are dimmed, struck through, and labeled **DISABLED** while retaining individual controls; they are skipped by bulk commands.
 - Removed the **LIVE PROCESS CONTROLS** workspace label.
 - Hid the character-list scrollbar while preserving normal scrolling.
+- Turning off **Switch to clientless after game entry** now explicitly disables sBot's verified native setting for running bots and future Manager launches.
 
 ### Technical
 - Serialized in-memory activity-log writes to prevent concurrent lifecycle tasks racing its bounded collection.
-- Verified with 93 model/native checks and 41 desktop UI checks, then published and started the updated self-contained development build at `C:\Users\juma\Desktop\sBot Manager`.
+- Verified with 95 model/native checks and 41 desktop UI checks, then published and started the updated self-contained development build at `C:\Users\juma\Desktop\sBot Manager`.
 - Initialized source control and published the verified project source and documentation to the GitHub `main` branch.
 
 ## 2026-09-25
