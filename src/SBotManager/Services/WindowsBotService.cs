@@ -137,15 +137,15 @@ public sealed class WindowsBotService : IBotService
         if (button == 0) return new BotResult(false, "Automatic clientless control unavailable. No fallback used.");
         using var again = Verified(found.Identity);
         if (!NativeWindows.OwnedBy(button, p.Id) || !NativeWindows.IsWindowEnabled(button)) return new BotResult(false, "Automatic clientless control changed. Action cancelled.");
-        if (NativeWindows.SendMessageTimeout(button, 0x00F0, 0, 0, 0x0002, 1500, out var checkedState) == 0)
-            return new BotResult(false, "Automatic clientless state could not be read. No change made.");
-        if ((checkedState != 0) == enabled)
-            return new BotResult(true, enabled ? "Automatic clientless is already enabled in sBot." : "Automatic clientless is already disabled in sBot.");
-        var sent = NativeWindows.SendMessageTimeout(button, 0x00F5, 0, 0, 0x0002, 1500, out _) != 0;
-        return sent ? new BotResult(true, enabled
-                        ? "Enabled sBot automatic clientless after game entry; its existing delay was preserved."
-                        : "Disabled sBot automatic clientless after game entry; its existing delay was preserved.")
-                    : new BotResult(false, "Automatic clientless command could not be delivered. No further action taken.");
+        // BM_SETCHECK writes an explicit state. Unlike a toggle click, it cannot
+        // accidentally invert an already-correct checkbox when its prior state is unknown.
+        if (NativeWindows.SendMessageTimeout(button, 0x00F1, enabled ? 1 : 0, 0, 0x0002, 1500, out _) == 0)
+            return new BotResult(false, "Automatic clientless state could not be set. Run Manager at the same elevation as sBot.");
+        if (NativeWindows.SendMessageTimeout(button, 0x00F0, 0, 0, 0x0002, 1500, out var checkedState) == 0 || (checkedState != 0) != enabled)
+            return new BotResult(false, "Automatic clientless state could not be confirmed. Run Manager at the same elevation as sBot.");
+        return new BotResult(true, enabled
+            ? "Enabled sBot automatic clientless after game entry; its existing delay was preserved."
+            : "Disabled sBot automatic clientless after game entry; its existing delay was preserved.");
     });
 
     public Task<BotResult> GoClientlessAsync(AccountSettings account) => Task.Run(() =>

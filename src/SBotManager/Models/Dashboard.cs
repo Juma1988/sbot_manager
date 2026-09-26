@@ -278,7 +278,11 @@ public sealed class Dashboard : Bindable
                 if (snapshot.CanStartGame)
                 {
                     var clientless = await bots.SetClientlessAfterGameAsync(account.Settings, AutoClientlessAfterGame);
-                    if (!clientless.Success) Log(account.Name, "Warning", clientless.Message);
+                    if (!clientless.Success)
+                    {
+                        Log(account.Name, "Warning", "Automatic Start Game blocked: " + clientless.Message);
+                        return;
+                    }
                     var result = await bots.StartGameAsync(account.Settings);
                     if (result.Success)
                     {

@@ -15,13 +15,14 @@
 - Double-click an account avatar to exclude/include it in bulk actions. Disabled accounts are visibly dimmed, struck through, and labeled **DISABLED**, but retain individual controls.
 - The character workspace scrolls normally without showing a scrollbar; the **LIVE PROCESS CONTROLS** label has been removed.
 - Saving automatic clientless now synchronizes its native sBot setting both on and off for running bots; future Manager launches synchronize it before Start Game.
+- Automatic Start Game now fails closed unless sBot's automatic-clientless checkbox is confirmed to match the saved setting. Run Manager at the same elevation as sBot for that verification.
 - Character Settings now accepts pasted or typed local absolute `.exe` paths, alongside Browse selection.
 - Removed the redundant aggregate counts and default lifecycle notice; per-card badges beside the gear provide account state, while warnings remain visible only when needed.
 
 ## Verification
 
-- Current source: `dotnet build` passed with zero warnings/errors after the automatic-clientless fix.
-- Model/native fixture smoke checks: **95 passed**, including automatic-clientless enable/disable synchronization.
+- Current source: `dotnet build` passed with zero warnings/errors after the clientless fail-closed update.
+- Model/native fixture smoke checks: **96 passed**, including the automatic-clientless safety block.
 - Desktop UI smoke checks: **40 passed**, including removal of the redundant workspace summary.
 
 ## Remaining verification / limitations

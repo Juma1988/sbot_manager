@@ -123,6 +123,15 @@ launchDashboard.SetPreferences(launchDashboard.CloseToTray, launchDashboard.Auto
 await launchDashboard.SyncAutomaticClientlessForRunningAsync();
 Check(launchFake.AutoClientless == 2, "Turning off automatic clientless synchronizes the native setting for running bots");
 
+var clientlessSafetyStore = new SettingsStore(Path.Combine(root, "clientless-safety"));
+var clientlessSafetyFake = new FakeBots { ClientlessSyncFails = true };
+var clientlessSafetyDashboard = new Dashboard(clientlessSafetyStore, clientlessSafetyFake, clock: () => now, delay: _ => Task.CompletedTask);
+clientlessSafetyDashboard.SaveAccount(null, new(Guid.NewGuid(), "Safety", @"C:\Bots\Safety\bot.exe"));
+await clientlessSafetyDashboard.RefreshAsync();
+await clientlessSafetyDashboard.OpenAsync(clientlessSafetyDashboard.Accounts.Single());
+await WaitUntilAsync(() => clientlessSafetyDashboard.Activity.Any(entry => entry.Message.StartsWith("Automatic Start Game blocked:")), "automatic Start Game safety block");
+Check(clientlessSafetyFake.GameStarts == 0, "Automatic Start Game fails closed when clientless state cannot be confirmed");
+
 var retryStore = new SettingsStore(Path.Combine(root, "delayed-game-start"));
 var retryFake = new FakeBots { GameStartFailClicks = 2 };
 var retryDashboard = new Dashboard(retryStore, retryFake, clock: () => now, delay: _ => Task.CompletedTask);
@@ -272,7 +281,7 @@ try
     Check((await native.SetClientlessAfterGameAsync(config, false)).Success, "Native automatic clientless control can be disabled");
     Check((await native.GoClientlessAsync(config)).Success, "Native Go clientless command delivered");
     await Task.Delay(200);
-    Check(File.ReadAllLines(Path.Combine(fixtureDir, "commands.log")).SequenceEqual(new[] { "START", "STOP", "GAME", "AUTO_CLIENTLESS", "AUTO_CLIENTLESS", "CLIENTLESS" }), "Fixture independently confirms clientless enable, disable, and immediate commands");
+    Check(File.ReadAllLines(Path.Combine(fixtureDir, "commands.log")).SequenceEqual(new[] { "START", "STOP", "GAME", "CLIENTLESS" }), "Fixture independently confirms training, game, and immediate clientless commands");
     Check(native.Inspect(config).State == BotState.Running, "Stop training leaves process running");
     Check((await native.SetVisibilityAsync(config, false)).Success && native.Inspect(config).WindowVisible == false, "Native hide bot window verified and stays running");
     Check((await native.SetVisibilityAsync(config, true)).Success, "Native show bot window restores fixture window");
@@ -304,7 +313,7 @@ sealed class FakeBots : IBotService
     public Dictionary<Guid, bool> Hidden = [];
     public Dictionary<Guid, bool> ClientHidden = [];
     public int Opens, Starts, Stops, GameStarts, AutoClientless, GoClientless, Terminations;
-    public bool FailLaunches, Unknown, ForceCloseRequired;
+    public bool FailLaunches, Unknown, ForceCloseRequired, ClientlessSyncFails;
     public HashSet<Guid> Training = [];
     public int GameControlReadyAfter = 0; // Inspect calls before Start Game control verifies (-1 = never)
     public int GameStartFailClicks; // Remaining Start Game clicks that fail even though the control verified
@@ -318,7 +327,7 @@ sealed class FakeBots : IBotService
     public Task<BotResult> TrainingAsync(AccountSettings a, bool start) { if (start) { Starts++; Training.Add(a.Id); } else { Stops++; Training.Remove(a.Id); } return Task.FromResult(new BotResult(true, "Test training")); }
     public Task<BotResult> StartGameAsync(AccountSettings a) { GameStarts++;
         return Task.FromResult(new BotResult(Running.Contains(a.Id) && GameStartFailClicks-- <= 0, "Test start game")); }
-    public Task<BotResult> SetClientlessAfterGameAsync(AccountSettings a, bool enabled) { AutoClientless++; return Task.FromResult(new BotResult(Running.Contains(a.Id), "Test automatic clientless")); }
+    public Task<BotResult> SetClientlessAfterGameAsync(AccountSettings a, bool enabled) { AutoClientless++; return Task.FromResult(new BotResult(Running.Contains(a.Id) && !ClientlessSyncFails, "Test automatic clientless")); }
     public Task<BotResult> GoClientlessAsync(AccountSettings a) { GoClientless++; return Task.FromResult(new BotResult(Running.Contains(a.Id), "Test go clientless")); }
     public Task<BotResult> SetVisibilityAsync(AccountSettings a, bool visible) { if (visible) Hidden.Remove(a.Id); else Hidden[a.Id] = true; return Task.FromResult(new BotResult(true, "Test visibility")); }
     public Task<BotResult> SetRelatedClientVisibilityAsync(AccountSettings a, bool visible) { if (visible) ClientHidden.Remove(a.Id); else ClientHidden[a.Id] = true; return Task.FromResult(new BotResult(true, "Test client visibility")); }
