@@ -1,0 +1,112 @@
+<Window x:Class="SBotManager.MainWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ xmlns:models="clr-namespace:SBotManager.Models"
+  Title="i1988 - sBot manager" Width="1320" Height="940" MinWidth="1120" MinHeight="760"
+ WindowState="Maximized"
+ Icon="pack://application:,,,/Assets/app.ico"
+ Background="#101722" Foreground="#EEF2FA" FontFamily="Segoe UI" FontSize="13"
+ WindowStartupLocation="CenterScreen" UseLayoutRounding="True">
+ <Grid>
+  <Grid.ColumnDefinitions><ColumnDefinition Width="180"/><ColumnDefinition/></Grid.ColumnDefinitions>
+<Border Background="#141C29" BorderBrush="#293245" BorderThickness="0,0,1,0">
+    <Grid Margin="16,20,16,16">
+     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+      <Image Source="pack://application:,,,/Assets/app-icon.png" Width="112" Height="112" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality" ToolTip="i1988 - sBot manager / sBot"/>
+     <Border Height="1" Background="#293245" Grid.Row="1" Margin="0,20,0,0" VerticalAlignment="Top"/>
+      <StackPanel Grid.Row="1" Margin="0,44,0,0">
+       <Button Content="Launch all" Click="OpenAll_Click" IsEnabled="{Binding CanBulk}" AutomationProperties.AutomationId="OpenBots" Padding="7,10"/>
+        <Button Content="Launch 1-1" Click="OpenSequential_Click" PreviewMouseLeftButtonDown="OpenSequential_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="OpenSequential_PreviewMouseLeftButtonUp" IsEnabled="{Binding CanBulk}" AutomationProperties.AutomationId="OpenBotsSequential" Padding="7,10" Margin="0,8,0,0" ToolTip="{Binding LaunchDelayToolTip}"/>
+       <Border Height="1" Background="#293245" Margin="0,18,0,16"/>
+          <Button Content="Start training all" Click="StartAll_Click" IsEnabled="{Binding CanBulk}" AutomationProperties.AutomationId="StartTrainingAll" Padding="7,10"/>
+         <Button Content="Stop training all" Click="StopAll_Click" Margin="0,8,0,0" AutomationProperties.AutomationId="StopTrainingAll" Padding="7,10"/>
+         <Border Height="1" Background="#293245" Margin="0,18,0,16"/>
+         <Button Content="Show all bots" Click="ShowAllBots_Click" IsEnabled="{Binding CanBulk}" AutomationProperties.AutomationId="ShowAllBots" Padding="7,10" ToolTip="Show all verified sBot windows"/>
+         <Button Content="Hide all bots" Click="HideAllBots_Click" IsEnabled="{Binding CanBulk}" AutomationProperties.AutomationId="HideAllBots" Padding="7,10" Margin="0,8,0,0" ToolTip="Hide all verified sBot windows"/>
+         <Border Height="1" Background="#293245" Margin="0,18,0,16"/>
+         <Button Content="Show all clients" Click="ShowAllClients_Click" IsEnabled="{Binding CanBulk}" AutomationProperties.AutomationId="ShowAllClients" Padding="7,10" ToolTip="Show all verified Silkroad client windows"/>
+         <Button Content="Hide all clients" Click="HideAllClients_Click" IsEnabled="{Binding CanBulk}" AutomationProperties.AutomationId="HideAllClients" Padding="7,10" Margin="0,8,0,0" ToolTip="Hide all verified Silkroad client windows"/>
+         <Border Height="1" Background="#293245" Margin="0,18,0,16"/>
+         <Button Content="Go clientless all" Click="GoClientlessAll_Click" IsEnabled="{Binding CanBulk}" AutomationProperties.AutomationId="GoClientlessAll" Padding="7,10" ToolTip="Send sBot's native Go clientless command to every verified running bot"/>
+         <Button Content="Terminate all…" Click="TerminateAll_Click" Foreground="#F1A6A6" Margin="0,8,0,0" AutomationProperties.AutomationId="TerminateAll" ToolTip="Terminate closes sBot. Stop training leaves it open."/>
+     </StackPanel>
+      <StackPanel Grid.Row="2">
+       <Border Height="1" Background="#293245" Margin="0,0,0,14"/>
+       <Button Content="Settings…" Click="Settings_Click" AutomationProperties.AutomationId="OpenSettings" ToolTip="Workspace behavior and Windows notifications"/>
+       <Button Content="Help / safety" Click="Guide_Click" Background="Transparent" Margin="0,8,0,0" ToolTip="How commands, recovery and safety work"/>
+       <Button Content="About &amp; support" Click="About_Click" Background="Transparent" Margin="0,8,0,0" AutomationProperties.AutomationId="OpenAbout" ToolTip="Version 0.0.1 · Support the project"/>
+       <Button Content="Exit manager…" Click="Exit_Click" Background="Transparent" Margin="0,8,0,0" AutomationProperties.AutomationId="ExitManager" ToolTip="Version 0.0.1 · Exit behavior follows Settings"/>
+     </StackPanel>
+    </Grid>
+   </Border>
+  <Grid Grid.Column="1" Margin="24,24,24,18">
+   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <StackPanel><TextBlock Text="YOUR FARM, UNDER CONTROL" Foreground="{StaticResource Muted}" FontSize="10"/><TextBlock Text="Character workspace" FontSize="28" FontWeight="SemiBold" Margin="0,6,0,0"/></StackPanel>
+   <Border Grid.Row="1" Background="#302C22" BorderBrush="#514733" BorderThickness="1" CornerRadius="8" Padding="12,9" Margin="0,15,0,12"><TextBlock Text="{Binding Notice}" Foreground="#E2CC9E" TextWrapping="Wrap" FontSize="12"/></Border>
+    <Border Grid.Row="2" Style="{StaticResource Panel}" Padding="14,11" Margin="0,0,0,16"><StackPanel><TextBlock Text="{Binding Summary}" Foreground="#BECDD9" AutomationProperties.AutomationId="Summary"/><TextBlock Text="{Binding SessionSummary}" Foreground="{StaticResource Muted}" FontSize="10" Margin="0,4,0,0" AutomationProperties.AutomationId="SessionSummary"/></StackPanel></Border>
+   <Grid Grid.Row="3">
+    <Grid.ColumnDefinitions><ColumnDefinition Width="1.45*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+     <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled" Padding="0,0,5,0" AutomationProperties.AutomationId="CharacterColumn">
+     <ItemsControl ItemsSource="{Binding Cards}">
+      <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="2" Rows="5"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+      <ItemsControl.Resources>
+       <DataTemplate DataType="{x:Type models:AddCard}">
+        <Button Content="＋  Add account" Click="Add_Click" Height="58" Margin="0,0,8,8" VerticalAlignment="Top" Background="#182B2A" BorderBrush="#44665B" Foreground="#A1E9CB" FontSize="12" Visibility="{Binding DataContext.CanAdd, RelativeSource={RelativeSource AncestorType=ItemsControl}, Converter={StaticResource BoolVisibility}}" AutomationProperties.AutomationId="AddAccount"/>
+       </DataTemplate>
+       <DataTemplate DataType="{x:Type models:Account}">
+        <Border Style="{StaticResource Panel}" Padding="11" Margin="0,0,8,8" VerticalAlignment="Top">
+         <Grid>
+          <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+          <StackPanel Grid.Column="0">
+           <Grid>
+            <Grid.ColumnDefinitions><ColumnDefinition Width="34"/><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+             <Button Grid.Column="0" Tag="{Binding}" PreviewMouseLeftButtonDown="Avatar_PreviewMouseLeftButtonDown" Background="Transparent" BorderThickness="0" Padding="0" Width="29" Height="29" ToolTip="{Binding BulkAvailabilityHelp}" AutomationProperties.AutomationId="{Binding Name, StringFormat=ToggleBulk{0}}" AutomationProperties.Name="{Binding BulkAvailabilityHelp}">
+              <Button.Style><Style TargetType="Button"><Setter Property="Opacity" Value="1"/><Style.Triggers><DataTrigger Binding="{Binding BulkEnabled}" Value="False"><Setter Property="Opacity" Value="0.45"/></DataTrigger></Style.Triggers></Style></Button.Style>
+              <Border Background="#2C364C" CornerRadius="7" Width="29" Height="29"><TextBlock Text="{Binding Initial}" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#BFC8ED"/></Border>
+             </Button>
+             <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="17" FontWeight="SemiBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
+              <TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding BulkEnabled}" Value="False"><Setter Property="Foreground" Value="#667085"/><Setter Property="TextDecorations" Value="{x:Static TextDecorations.Strikethrough}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+             </TextBlock>
+             <Border Grid.Column="2" Background="#222E3C" CornerRadius="4" Padding="6,4" VerticalAlignment="Center" ToolTip="{Binding BulkAvailabilityHelp}"><TextBlock Text="{Binding CardStatus}" Foreground="{Binding CardStatusColor}" FontSize="8" FontWeight="Bold"/></Border>
+            <Button Grid.Column="3" Click="Configure_Click" Tag="{Binding}" Margin="5,0,0,0" Width="29" MinHeight="28" Padding="4" ToolTip="Character settings" AutomationProperties.AutomationId="{Binding Name, StringFormat=Configure{0}}"><TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"/></Button>
+           </Grid>
+           <Grid Margin="0,6,0,5"><TextBlock Text="{Binding GameStatus}" Foreground="{StaticResource Muted}" FontSize="10"/><TextBlock Text="{Binding TrainingStatus}" Foreground="{StaticResource Muted}" HorizontalAlignment="Right" FontSize="10"/></Grid>
+           <Border Background="#0B180E" BorderBrush="#375D3D" BorderThickness="1" Height="17" ToolTip="{Binding ExpHelp}"><TextBlock Text="{Binding ExpText}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#B1C7B3" FontSize="9"/></Border>
+           <TextBlock Text="{Binding Executable}" ToolTip="{Binding ExecutablePath}" Foreground="#9CAAC1" FontFamily="Consolas" FontSize="9" Margin="0,5,0,0" TextTrimming="CharacterEllipsis"/>
+            <TextBlock Text="{Binding RecoveryText}" Foreground="{StaticResource Muted}" FontSize="9" Margin="0,4,0,0" TextTrimming="CharacterEllipsis"/>
+            <TextBlock Text="{Binding LastRecoveryEvent}" Foreground="{StaticResource Muted}" FontSize="9" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" ToolTip="Latest recovery event; the full history is in Activity log"/>
+          </StackPanel>
+           <StackPanel Grid.Column="2">
+              <Button Content="{Binding TrainingActionText}" Click="TrainingToggle_Click" Tag="{Binding}" IsEnabled="{Binding CanChangeTraining}" MinHeight="26" Padding="3,3" FontSize="11" Margin="0,4,0,0" ToolTip="{Binding TrainingActionHelp}" AutomationProperties.AutomationId="{Binding Name, StringFormat=Training{0}}"/>
+             <Button Content="{Binding ShowHideText}" Click="ShowHide_Click" Tag="{Binding}" IsEnabled="{Binding CanShowHide}" MinHeight="26" Padding="3,3" FontSize="11" Margin="0,4,0,0" ToolTip="Show or hide the bot window" AutomationProperties.AutomationId="{Binding Name, StringFormat=ShowHide{0}}"/>
+             <Button Content="{Binding ShowHideClientText}" Click="ShowHideClient_Click" Tag="{Binding}" IsEnabled="{Binding CanShowHideClient}" MinHeight="26" Padding="3,3" FontSize="11" Margin="0,4,0,0" ToolTip="Show or hide Silkroad windows launched by this bot" AutomationProperties.AutomationId="{Binding Name, StringFormat=ShowHideClient{0}}"/>
+            <Button Content="{Binding PrimaryActionText}" Click="PrimaryAction_Click" Tag="{Binding}" IsEnabled="{Binding CanPrimaryAction}" MinHeight="26" Padding="3,3" FontSize="11" Margin="0,4,0,0" ToolTip="{Binding PrimaryActionHelp}" AutomationProperties.AutomationId="{Binding Name, StringFormat=BotAction{0}}"/>
+           </StackPanel>
+         </Grid>
+        </Border>
+       </DataTemplate>
+      </ItemsControl.Resources>
+     </ItemsControl>
+    </ScrollViewer>
+    <Border Grid.Column="2" Style="{StaticResource Panel}" Padding="16">
+     <Grid>
+      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+       <TextBlock Text="Activity log" FontSize="18" FontWeight="SemiBold"/>
+      <ScrollViewer Grid.Row="1" Margin="0,12,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AutomationProperties.AutomationId="ActivityPanel">
+       <ItemsControl ItemsSource="{Binding Activity}"><ItemsControl.ItemTemplate><DataTemplate>
+        <Border BorderBrush="#273144" BorderThickness="0,0,0,1" Padding="0,11" MouseLeftButtonDown="LogEntry_MouseLeftButtonDown" ToolTip="Double-click to copy this entry">
+         <StackPanel>
+          <Grid><StackPanel Orientation="Horizontal"><TextBlock Text="{Binding Account}" Foreground="{Binding Color}" FontWeight="SemiBold" FontSize="11"/><TextBlock Text="{Binding Severity}" Foreground="{Binding Color}" FontSize="10" Margin="10,1,0,0"/></StackPanel><TextBlock Text="{Binding Time}" Foreground="{StaticResource Muted}" FontFamily="Consolas" FontSize="11" HorizontalAlignment="Right" Margin="0,0,8,0"/></Grid>
+          <TextBlock Text="{Binding Message}" Foreground="#BDCADB" FontSize="12" TextWrapping="Wrap" Margin="0,6,8,0" LineHeight="18"/>
+         </StackPanel>
+        </Border>
+       </DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+      </ScrollViewer>
+      <Grid Grid.Row="2" Margin="0,14,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><Button Content="Copy log" Click="CopyLog_Click" Margin="0,0,8,0" AutomationProperties.AutomationId="CopyLogs"/><Button Grid.Column="1" Content="Export…" Click="ExportLog_Click" Margin="0,0,8,0" AutomationProperties.AutomationId="ExportLogs"/><Button Grid.Column="2" Content="Clear log" Click="ClearLog_Click" AutomationProperties.AutomationId="ClearLogs"/></Grid>
+     </Grid>
+    </Border>
+   </Grid>
+   <TextBlock Grid.Row="4" Text="Local settings saved · No credentials stored · Game / EXP telemetry not connected" Foreground="{StaticResource Muted}" FontSize="10" Margin="0,12,0,0"/>
+  </Grid>
+ </Grid>
+</Window>

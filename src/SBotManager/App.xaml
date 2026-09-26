@@ -1,0 +1,122 @@
+<Application x:Class="SBotManager.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Application.Resources>
+         <SolidColorBrush x:Key="Muted" Color="#98A4B8"/>
+         <Style x:Key="SectionLabel" TargetType="TextBlock">
+             <Setter Property="Foreground" Value="#8EE1BE"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="SemiBold"/>
+         </Style>
+        <BooleanToVisibilityConverter x:Key="BoolVisibility"/>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#101722"/><Setter Property="Foreground" Value="#EEF2FA"/>
+            <Setter Property="BorderBrush" Value="#495972"/><Setter Property="Padding" Value="10,8"/>
+            <Setter Property="CaretBrush" Value="White"/>
+        </Style>
+        <Style TargetType="CheckBox"><Setter Property="Foreground" Value="#DCE5F3"/><Setter Property="VerticalContentAlignment" Value="Center"/></Style>
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="#DCE5F3"/>
+            <Setter Property="Background" Value="#253044"/>
+            <Setter Property="BorderBrush" Value="#38455D"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="MinHeight" Value="40"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Surface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Surface" Property="Opacity" Value="0.8"/></Trigger>
+                            <Trigger Property="IsPressed" Value="True"><Setter TargetName="Surface" Property="Opacity" Value="0.6"/></Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Surface" Property="BorderBrush" Value="#FFFFFF"/><Setter TargetName="Surface" Property="BorderThickness" Value="2"/></Trigger>
+                            <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Surface" Property="Opacity" Value="0.4"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#8EE1BE"/>
+            <Setter Property="Foreground" Value="#10251D"/>
+            <Setter Property="BorderBrush" Value="#8EE1BE"/>
+        </Style>
+         <Style TargetType="ToggleButton">
+            <Setter Property="Foreground" Value="#DCE5F3"/>
+            <Setter Property="Background" Value="#253044"/>
+            <Setter Property="BorderBrush" Value="#38455D"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="MinHeight" Value="40"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Surface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Surface" Property="Opacity" Value="0.8"/></Trigger>
+                            <Trigger Property="IsPressed" Value="True"><Setter TargetName="Surface" Property="Opacity" Value="0.6"/></Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Surface" Property="BorderBrush" Value="#FFFFFF"/><Setter TargetName="Surface" Property="BorderThickness" Value="2"/></Trigger>
+                            <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Surface" Property="Opacity" Value="0.4"/></Trigger>
+                            <Trigger Property="IsChecked" Value="True"><Setter TargetName="Surface" Property="Background" Value="#2C3A3A"/><Setter TargetName="Surface" Property="BorderBrush" Value="#44665B"/></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+             </Setter>
+         </Style>
+         <Style x:Key="SettingsToggle" TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+             <Setter Property="Width" Value="72"/>
+             <Setter Property="Height" Value="40"/>
+             <Setter Property="MinHeight" Value="40"/>
+             <Setter Property="Padding" Value="0"/>
+             <Setter Property="ToolTip" Value="Toggle setting"/>
+             <Setter Property="Template">
+                 <Setter.Value>
+                     <ControlTemplate TargetType="ToggleButton">
+                         <Canvas Width="72" Height="40" SnapsToDevicePixels="True">
+                             <Border x:Name="FocusRing" Canvas.Left="1" Canvas.Top="1" Width="70" Height="38" CornerRadius="19" BorderBrush="Transparent" BorderThickness="2"/>
+                             <Border x:Name="Track" Canvas.Left="4" Canvas.Top="4" Width="64" Height="32" CornerRadius="16" Background="#2B3548" BorderBrush="#495972" BorderThickness="1">
+                                 <Grid>
+                                     <TextBlock x:Name="OffLabel" Text="OFF" Foreground="#C5CFDD" FontSize="10" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,9,0"/>
+                                     <TextBlock x:Name="OnLabel" Text="ON" Foreground="#10251D" FontSize="10" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Visibility="Collapsed"/>
+                                 </Grid>
+                             </Border>
+                             <Border x:Name="Thumb" Canvas.Left="7" Canvas.Top="7" Width="26" Height="26" CornerRadius="13" Background="#DCE5F3" BorderBrush="#FFFFFF" BorderThickness="1">
+                                 <Border.Effect><DropShadowEffect BlurRadius="3" ShadowDepth="1" Opacity="0.3"/></Border.Effect>
+                                 <Border.RenderTransform><TranslateTransform/></Border.RenderTransform>
+                             </Border>
+                         </Canvas>
+                         <ControlTemplate.Triggers>
+                             <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Track" Property="BorderBrush" Value="#72839E"/></Trigger>
+                             <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="FocusRing" Property="BorderBrush" Value="#FFFFFF"/></Trigger>
+                             <Trigger Property="IsChecked" Value="True">
+                                 <Setter TargetName="Track" Property="Background" Value="#8EE1BE"/>
+                                 <Setter TargetName="Track" Property="BorderBrush" Value="#8EE1BE"/>
+                                 <Setter TargetName="Thumb" Property="Background" Value="#FFFFFF"/>
+                                 <Setter TargetName="OffLabel" Property="Visibility" Value="Collapsed"/>
+                                 <Setter TargetName="OnLabel" Property="Visibility" Value="Visible"/>
+                                 <Trigger.EnterActions><BeginStoryboard><Storyboard><DoubleAnimation Storyboard.TargetName="Thumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)" To="32" Duration="0:0:0.18"><DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction></DoubleAnimation></Storyboard></BeginStoryboard></Trigger.EnterActions>
+                                 <Trigger.ExitActions><BeginStoryboard><Storyboard><DoubleAnimation Storyboard.TargetName="Thumb" Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)" To="0" Duration="0:0:0.18"><DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction></DoubleAnimation></Storyboard></BeginStoryboard></Trigger.ExitActions>
+                             </Trigger>
+                             <Trigger Property="IsPressed" Value="True"><Setter TargetName="Thumb" Property="Opacity" Value="0.78"/></Trigger>
+                             <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.4"/></Trigger>
+                         </ControlTemplate.Triggers>
+                     </ControlTemplate>
+                 </Setter.Value>
+             </Setter>
+         </Style>
+         <Style x:Key="Panel" TargetType="Border">
+            <Setter Property="Background" Value="#182131"/>
+            <Setter Property="BorderBrush" Value="#2B3548"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="12"/>
+        </Style>
+    </Application.Resources>
+</Application>

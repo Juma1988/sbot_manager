@@ -1,0 +1,67 @@
+<Window x:Class="SBotManager.SettingsWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="Settings - i1988 - sBot manager" Width="860" MinWidth="720" SizeToContent="Height"
+ Icon="pack://application:,,,/Assets/app.ico" Background="#101722" Foreground="#EEF2FA"
+ FontFamily="Segoe UI" FontSize="13" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" ResizeMode="NoResize" UseLayoutRounding="True">
+ <Grid Margin="24,22,24,20">
+  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+  <StackPanel>
+   <TextBlock Text="Settings" FontSize="26" FontWeight="SemiBold"/>
+   <TextBlock Text="Choose how i1988 - sBot manager behaves after you launch or close it." Foreground="#98A4B8" TextWrapping="Wrap" Margin="0,6,0,0" LineHeight="18"/>
+  </StackPanel>
+  <Grid Grid.Row="1" Margin="0,20,0,16" KeyboardNavigation.TabNavigation="Continue">
+   <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="20"/><ColumnDefinition/></Grid.ColumnDefinitions>
+   <StackPanel Grid.Column="0">
+    <TextBlock Text="WORKSPACE BEHAVIOR" Style="{StaticResource SectionLabel}"/>
+    <Border Style="{StaticResource Panel}" Padding="16" Margin="0,8,0,0">
+     <StackPanel>
+      <Grid Margin="0,0,0,14"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="Close to tray" FontWeight="SemiBold" FontSize="14"/><TextBlock Text="Closing the window keeps i1988 - sBot manager running in the notification area." Foreground="#98A4B8" TextWrapping="Wrap" Margin="0,3,16,0"/></StackPanel><ToggleButton Grid.Column="1" x:Name="CloseToTrayPreference" Style="{StaticResource SettingsToggle}" VerticalAlignment="Center" AutomationProperties.AutomationId="CloseToTrayPreference" AutomationProperties.Name="Close to tray"/></Grid>
+      <Border Height="1" Background="#2B3548" Margin="0,0,0,14"/>
+      <Grid Margin="0,0,0,14"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="Auto-hide sBot" FontWeight="SemiBold" FontSize="14"/><TextBlock Text="Hide each verified sBot window after it launches. The bot keeps running." Foreground="#98A4B8" TextWrapping="Wrap" Margin="0,3,16,0"/></StackPanel><ToggleButton Grid.Column="1" x:Name="AutoHideBotsPreference" Style="{StaticResource SettingsToggle}" VerticalAlignment="Center" AutomationProperties.AutomationId="AutoHideBotsPreference" AutomationProperties.Name="Auto-hide sBot"/></Grid>
+      <Border Height="1" Background="#2B3548" Margin="0,0,0,14"/>
+      <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="Auto-hide SRO client" FontWeight="SemiBold" FontSize="14"/><TextBlock Text="Hide a verified related Silkroad client when it appears after launch." Foreground="#98A4B8" TextWrapping="Wrap" Margin="0,3,16,0"/></StackPanel><ToggleButton Grid.Column="1" x:Name="AutoHideClientsPreference" Style="{StaticResource SettingsToggle}" VerticalAlignment="Center" AutomationProperties.AutomationId="AutoHideClientsPreference" AutomationProperties.Name="Auto-hide SRO client"/></Grid>
+     </StackPanel>
+    </Border>
+    <TextBlock Text="WINDOWS STARTUP" Style="{StaticResource SectionLabel}" Margin="0,22,0,0"/>
+    <Border Style="{StaticResource Panel}" Padding="16" Margin="0,8,0,0">
+     <StackPanel>
+      <Grid Margin="0,0,0,14"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="Start i1988 - sBot manager with Windows" FontWeight="SemiBold" FontSize="14"/><TextBlock Text="Open i1988 - sBot manager after you sign in. It does not launch bots by itself." Foreground="#98A4B8" TextWrapping="Wrap" Margin="0,3,16,0"/></StackPanel><ToggleButton Grid.Column="1" x:Name="StartWithWindowsPreference" Style="{StaticResource SettingsToggle}" VerticalAlignment="Center" AutomationProperties.AutomationId="StartWithWindowsPreference" AutomationProperties.Name="Start i1988 - sBot manager with Windows"/></Grid>
+      <Border Height="1" Background="#2B3548" Margin="0,0,0,14"/>
+       <StackPanel IsEnabled="{Binding IsChecked, ElementName=StartWithWindowsPreference}">
+        <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="Launch bots after Windows startup" FontWeight="SemiBold" FontSize="14"/><TextBlock Text="Launch configured, stopped bots only after i1988 - sBot manager was started by Windows." Foreground="#98A4B8" TextWrapping="Wrap" Margin="0,3,16,0"/></StackPanel><ToggleButton Grid.Column="1" x:Name="LaunchBotsAtWindowsStartupPreference" Style="{StaticResource SettingsToggle}" VerticalAlignment="Center" AutomationProperties.AutomationId="LaunchBotsAtWindowsStartupPreference" AutomationProperties.Name="Launch bots after Windows startup"/></Grid>
+        <Border Height="1" Background="#2B3548" Margin="0,14,0,14"/>
+        <Grid IsEnabled="{Binding IsChecked, ElementName=LaunchBotsAtWindowsStartupPreference}"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="Launch mode" FontWeight="SemiBold" FontSize="14"/><TextBlock Text="Choose whether startup launches every bot at once or one at a time." Foreground="#98A4B8" TextWrapping="Wrap" Margin="0,3,16,0"/></StackPanel><ComboBox Grid.Column="1" x:Name="StartupLaunchModePreference" Width="122" SelectedIndex="1" VerticalAlignment="Center" AutomationProperties.AutomationId="StartupLaunchModePreference" AutomationProperties.Name="Windows startup launch mode"><ComboBoxItem Content="Launch all"/><ComboBoxItem Content="Launch 1-1"/></ComboBox></Grid>
+       </StackPanel>
+     </StackPanel>
+     </Border>
+     <TextBlock Text="CLIENTLESS MODE" Style="{StaticResource SectionLabel}" Margin="0,22,0,0"/>
+     <Border Style="{StaticResource Panel}" Padding="16" Margin="0,8,0,0">
+      <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="Switch to clientless after game entry" FontWeight="SemiBold" FontSize="14"/><TextBlock Text="For each Manager-launched sBot, enable its native automatic clientless option before Start Game. Each bot keeps its existing delay." Foreground="#98A4B8" TextWrapping="Wrap" Margin="0,3,16,0"/></StackPanel><ToggleButton Grid.Column="1" x:Name="AutoClientlessAfterGamePreference" Style="{StaticResource SettingsToggle}" VerticalAlignment="Center" AutomationProperties.AutomationId="AutoClientlessAfterGamePreference" AutomationProperties.Name="Switch to clientless after game entry"/></Grid>
+     </Border>
+    </StackPanel>
+   <StackPanel Grid.Column="2">
+    <TextBlock Text="EXIT BEHAVIOR" Style="{StaticResource SectionLabel}"/>
+    <Border Style="{StaticResource Panel}" Padding="16" Margin="0,8,0,0">
+     <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="Terminate session bots when exiting" FontWeight="SemiBold" FontSize="14"/><TextBlock Text="When enabled, exiting Manager closes only sBots opened by this Manager session. Pre-existing bots keep running." Foreground="#98A4B8" TextWrapping="Wrap" Margin="0,3,16,0"/></StackPanel><ToggleButton Grid.Column="1" x:Name="TerminateSessionBotsOnExitPreference" Style="{StaticResource SettingsToggle}" VerticalAlignment="Center" AutomationProperties.AutomationId="TerminateSessionBotsOnExitPreference" AutomationProperties.Name="Terminate session bots when exiting"/></Grid>
+    </Border>
+    <TextBlock Text="WINDOWS NOTIFICATIONS" Style="{StaticResource SectionLabel}" Margin="0,22,0,0"/>
+    <Border Style="{StaticResource Panel}" Padding="16" Margin="0,8,0,0">
+     <StackPanel>
+      <Grid Margin="0,0,0,14"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel><TextBlock Text="Enable notifications" FontWeight="SemiBold" FontSize="14"/><TextBlock Text="Show Windows notifications for selected Manager events." Foreground="#98A4B8" TextWrapping="Wrap" Margin="0,3,16,0"/></StackPanel><ToggleButton Grid.Column="1" x:Name="NotificationsMasterPreference" Style="{StaticResource SettingsToggle}" VerticalAlignment="Center" AutomationProperties.AutomationId="NotificationsMasterPreference" AutomationProperties.Name="Enable Windows notifications"/></Grid>
+      <Border Height="1" Background="#2B3548" Margin="0,0,0,14"/>
+      <Grid Margin="0,0,0,10" IsEnabled="{Binding IsChecked, ElementName=NotificationsMasterPreference}"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="Recovery retry limit reached" VerticalAlignment="Center"/><ToggleButton Grid.Column="1" x:Name="RecoveryBudgetNotificationPreference" Style="{StaticResource SettingsToggle}" VerticalAlignment="Center" AutomationProperties.AutomationId="RecoveryBudgetNotificationPreference" AutomationProperties.Name="Notify when recovery retry limit is reached"/></Grid>
+      <Grid Margin="0,0,0,10" IsEnabled="{Binding IsChecked, ElementName=NotificationsMasterPreference}"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="Bot stops unexpectedly" VerticalAlignment="Center"/><ToggleButton Grid.Column="1" x:Name="BotStoppedNotificationPreference" Style="{StaticResource SettingsToggle}" VerticalAlignment="Center" AutomationProperties.AutomationId="BotStoppedNotificationPreference" AutomationProperties.Name="Notify when a bot stops unexpectedly"/></Grid>
+      <Grid Margin="0,0,0,10" IsEnabled="{Binding IsChecked, ElementName=NotificationsMasterPreference}"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="Bot cannot be verified" VerticalAlignment="Center"/><ToggleButton Grid.Column="1" x:Name="BotUnknownNotificationPreference" Style="{StaticResource SettingsToggle}" VerticalAlignment="Center" AutomationProperties.AutomationId="BotUnknownNotificationPreference" AutomationProperties.Name="Notify when a bot cannot be verified"/></Grid>
+      <Grid IsEnabled="{Binding IsChecked, ElementName=NotificationsMasterPreference}"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="Bot needs force termination" VerticalAlignment="Center"/><ToggleButton Grid.Column="1" x:Name="ForceTerminationNotificationPreference" Style="{StaticResource SettingsToggle}" VerticalAlignment="Center" AutomationProperties.AutomationId="ForceTerminationNotificationPreference" AutomationProperties.Name="Notify when a bot needs force termination"/></Grid>
+     </StackPanel>
+    </Border>
+   </StackPanel>
+  </Grid>
+  <DockPanel Grid.Row="2" LastChildFill="False">
+   <TextBlock Text="Changes apply when you save." Foreground="#98A4B8" VerticalAlignment="Center"/>
+   <Button Content="Cancel" Click="Cancel_Click" AutomationProperties.AutomationId="CancelSettings" Margin="10,0,0,0" DockPanel.Dock="Right"/>
+   <Button Content="Save changes" Click="Save_Click" Style="{StaticResource PrimaryButton}" AutomationProperties.AutomationId="SaveSettings" DockPanel.Dock="Right"/>
+  </DockPanel>
+ </Grid>
+</Window>

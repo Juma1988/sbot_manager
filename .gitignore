@@ -1,0 +1,9 @@
+**/bin/
+**/obj/
+.vs/
+artifacts/
+publish/
+releases/
+data/
+winsdksetup.exe
+ChatGPT_Image_Sep_24__2026__09_26_00_PM-removebg-preview.png
