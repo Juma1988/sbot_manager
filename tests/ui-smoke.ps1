@@ -95,7 +95,7 @@ $freshWindow = [System.Windows.Automation.AutomationElement]::FromHandle($freshP
 Start-Sleep -Milliseconds 1200
 try {
  Check ($null -ne (Find-Id $freshWindow 'AddAccount')) 'First run shows the add-account card'
- Check ((Find-Id $freshWindow 'Summary').Current.Name -like '0/10*') 'First run reports an empty account list'
+  Check ($null -eq (Find-Id $freshWindow 'Summary')) 'Redundant workspace summary is removed'
   Check ($null -eq (Find-Id $freshWindow 'ConfigureAccountA')) 'First run contains no pre-seeded characters'
 } finally {
  Stop-Process -Id $freshProcess.Id -ErrorAction SilentlyContinue
@@ -183,7 +183,6 @@ Invoke-Id $settings 'BrowseExecutable'; $picker=Dialog "Choose the character's s
   Start-Sleep -Milliseconds 1500
   try { Invoke-Id $script:window 'AddAccount' } catch {
    Write-Output ("--- diagnostics before add-click #" + $i + " ---")
-   Write-Output ("Summary: " + (Find-Id $script:window 'Summary').Current.Name)
    $bulk=Find-Id $script:window 'StartTrainingAll'
    Write-Output ("BulkAll IsEnabled: " + $bulk.Current.IsEnabled)
    Get-Window
@@ -204,7 +203,6 @@ Invoke-Id $settings 'BrowseExecutable'; $picker=Dialog "Choose the character's s
  }
  $add=Find-Id $script:window 'AddAccount'
  Check ($null -eq $add -or $add.Current.IsOffscreen) 'Add card disappears at ten accounts'
- Check ((Find-Id $script:window 'Summary').Current.Name -like '10/10*') 'Summary reports ten-account limit'
  Invoke-Id $script:window 'ConfigureCharacter10'; $dialog=Dialog 'Character settings'
  Invoke-Id $dialog 'RemoveAccount'; $confirmation=Dialog 'Remove account'
  Dialog-Click $confirmation 6; Wait-DialogGone 'Remove account'; Wait-DialogGone 'Character settings'; Get-Window
@@ -226,7 +224,7 @@ Invoke-Id $settings 'BrowseExecutable'; $picker=Dialog "Choose the character's s
  for ($i=0; $i -lt 50; $i++) { Start-Sleep -Milliseconds 200; $process.Refresh(); if ($process.MainWindowHandle -ne 0) { break } }
  Get-Window
  Start-Sleep -Milliseconds 1000
-    Check ((Find-Id $script:window 'Summary').Current.Name -like '9/10*' -and (Find-Id $script:window 'BotActionAccountA').Current.IsEnabled) 'Settings survive full application restart'
+    Check ((Find-Id $script:window 'BotActionAccountA').Current.IsEnabled) 'Settings survive full application restart'
   $settingsBefore=[IO.File]::ReadAllText("$data\settings.json")
    Invoke-Id $script:window 'OpenSettings'; $notifDialog=Dialog 'Settings - i1988 - sBot manager'
      Check ($null -ne (Find-Id $notifDialog 'CloseToTrayPreference') -and $null -ne (Find-Id $notifDialog 'AutoHideBotsPreference') -and $null -ne (Find-Id $notifDialog 'AutoHideClientsPreference') -and $null -ne (Find-Id $notifDialog 'AutoClientlessAfterGamePreference') -and $null -ne (Find-Id $notifDialog 'StartWithWindowsPreference') -and $null -ne (Find-Id $notifDialog 'LaunchBotsAtWindowsStartupPreference') -and $null -ne (Find-Id $notifDialog 'StartupLaunchModePreference') -and $null -ne (Find-Id $notifDialog 'TerminateSessionBotsOnExitPreference') -and $null -ne (Find-Id $notifDialog 'NotificationsMasterPreference') -and $null -ne (Find-Id $notifDialog 'BotStoppedNotificationPreference') -and (Find-Id $notifDialog 'CloseToTrayPreference').Current.ControlType -eq [System.Windows.Automation.ControlType]::Button -and (Find-Id $notifDialog 'CloseToTrayPreference').Current.BoundingRectangle.Left -lt (Find-Id $notifDialog 'TerminateSessionBotsOnExitPreference').Current.BoundingRectangle.Left -and !(Find-Id $notifDialog 'LaunchBotsAtWindowsStartupPreference').Current.IsEnabled -and !(Find-Id $notifDialog 'StartupLaunchModePreference').Current.IsEnabled) 'Settings contains clientless, grouped two-column, and guarded startup controls'

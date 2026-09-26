@@ -40,11 +40,10 @@
     </Grid>
    </Border>
   <Grid Grid.Column="1" Margin="24,24,24,18">
-   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
     <StackPanel><TextBlock Text="YOUR FARM, UNDER CONTROL" Foreground="{StaticResource Muted}" FontSize="10"/><TextBlock Text="Character workspace" FontSize="28" FontWeight="SemiBold" Margin="0,6,0,0"/></StackPanel>
-   <Border Grid.Row="1" Background="#302C22" BorderBrush="#514733" BorderThickness="1" CornerRadius="8" Padding="12,9" Margin="0,15,0,12"><TextBlock Text="{Binding Notice}" Foreground="#E2CC9E" TextWrapping="Wrap" FontSize="12"/></Border>
-    <Border Grid.Row="2" Style="{StaticResource Panel}" Padding="14,11" Margin="0,0,0,16"><StackPanel><TextBlock Text="{Binding Summary}" Foreground="#BECDD9" AutomationProperties.AutomationId="Summary"/><TextBlock Text="{Binding SessionSummary}" Foreground="{StaticResource Muted}" FontSize="10" Margin="0,4,0,0" AutomationProperties.AutomationId="SessionSummary"/></StackPanel></Border>
-   <Grid Grid.Row="3">
+    <Border Grid.Row="1" Background="#302C22" BorderBrush="#514733" BorderThickness="1" CornerRadius="8" Padding="12,9" Margin="0,15,0,12" Visibility="{Binding HasNotice, Converter={StaticResource BoolVisibility}}"><TextBlock Text="{Binding Notice}" Foreground="#E2CC9E" TextWrapping="Wrap" FontSize="12"/></Border>
+    <Grid Grid.Row="2">
     <Grid.ColumnDefinitions><ColumnDefinition Width="1.45*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
      <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled" Padding="0,0,5,0" AutomationProperties.AutomationId="CharacterColumn">
      <ItemsControl ItemsSource="{Binding Cards}">
@@ -106,7 +105,7 @@
      </Grid>
     </Border>
    </Grid>
-   <TextBlock Grid.Row="4" Text="Local settings saved · No credentials stored · Game / EXP telemetry not connected" Foreground="{StaticResource Muted}" FontSize="10" Margin="0,12,0,0"/>
+    <TextBlock Grid.Row="3" Text="Local settings saved · No credentials stored · Game / EXP telemetry not connected" Foreground="{StaticResource Muted}" FontSize="10" Margin="0,12,0,0"/>
   </Grid>
  </Grid>
 </Window>

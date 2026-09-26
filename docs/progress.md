@@ -16,12 +16,13 @@
 - The character workspace scrolls normally without showing a scrollbar; the **LIVE PROCESS CONTROLS** label has been removed.
 - Saving automatic clientless now synchronizes its native sBot setting both on and off for running bots; future Manager launches synchronize it before Start Game.
 - Character Settings now accepts pasted or typed local absolute `.exe` paths, alongside Browse selection.
+- Removed the redundant aggregate counts and default lifecycle notice; per-card badges beside the gear provide account state, while warnings remain visible only when needed.
 
 ## Verification
 
 - Current source: `dotnet build` passed with zero warnings/errors after the automatic-clientless fix.
 - Model/native fixture smoke checks: **95 passed**, including automatic-clientless enable/disable synchronization.
-- Desktop UI smoke checks: **41 passed**, including scrollbar-free character-list scrolling.
+- Desktop UI smoke checks: **40 passed**, including removal of the redundant workspace summary.
 
 ## Remaining verification / limitations
 

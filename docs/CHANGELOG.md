@@ -9,10 +9,11 @@
 - Hid the character-list scrollbar while preserving normal scrolling.
 - Turning off **Switch to clientless after game entry** now explicitly disables sBot's verified native setting for running bots and future Manager launches.
 - The **sBot executable** field now accepts pasted or typed local absolute `.exe` paths and validates them as they change.
+- Removed the redundant workspace aggregate account summary and default lifecycle notice; per-card status badges remain, and the notice region is reserved for actual warnings.
 
 ### Technical
 - Serialized in-memory activity-log writes to prevent concurrent lifecycle tasks racing its bounded collection.
-- Verified with 95 model/native checks and 41 desktop UI checks, then published and started the updated self-contained development build at `C:\Users\juma\Desktop\sBot Manager`.
+- Verified with 95 model/native checks and 40 desktop UI checks, then published and started the updated self-contained development build at `C:\Users\juma\Desktop\sBot Manager`.
 - Initialized source control and published the verified project source and documentation to the GitHub `main` branch.
 
 ## 2026-09-25

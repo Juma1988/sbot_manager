@@ -35,7 +35,8 @@ public sealed class Dashboard : Bindable
     public bool TerminateSessionBotsOnExit { get; private set; }
     public int LaunchDelaySeconds { get; private set; }
     public string LaunchDelayToolTip => $"Change one-by-one spacing (currently {LaunchDelaySeconds} seconds)";
-    public string Notice { get; private set; } = "Live process controls · training requires accessible sBot controls · EXP unavailable";
+    public string Notice { get; private set; } = "";
+    public bool HasNotice => !string.IsNullOrWhiteSpace(Notice);
     public ObservableCollection<Account> Accounts { get; } = [];
     public ObservableCollection<object> Cards { get; } = [];
     public ObservableCollection<ActivityEntry> Activity { get; } = [];
@@ -43,7 +44,6 @@ public sealed class Dashboard : Bindable
     public string SessionSummary => $"{SessionLaunchedRunning.Count} launched this session · {Accounts.Count(a => a.State == BotState.Running && !launchedThisSession.Contains(a.Id))} pre-existing";
     public bool CanAdd => Accounts.Count < 10 && CanBulk;
     public bool CanBulk => !bulkBusy && !shuttingDown && !terminationMode;
-    public string Summary => $"{Accounts.Count}/10 accounts   ·   {Accounts.Count(a => a.State == BotState.Running)} running   ·   {Accounts.Count(a => a.State == BotState.Stopped)} stopped   ·   {Accounts.Count(a => a.RecoveryEnabled && !a.RecoverySuspended)} recovery enabled";
     public event Action<NotificationEvent, string>? Notify;
     public NotificationConfig Notifications { get; private set; }
 
@@ -65,7 +65,7 @@ public sealed class Dashboard : Bindable
         foreach (var config in loaded.Settings.Accounts) Attach(new Account(config));
         SyncCards();
         Log("MANAGER", "Info", "Manager opened. No bots or training started automatically.");
-        if (loaded.Warning is not null) { Notice = loaded.Warning; Log("MANAGER", "Warning", loaded.Warning); }
+        if (loaded.Warning is not null) { Notice = loaded.Warning; Changed(nameof(Notice)); Changed(nameof(HasNotice)); Log("MANAGER", "Warning", loaded.Warning); }
     }
 
     public void SetNotifications(NotificationConfig value)
@@ -91,7 +91,7 @@ public sealed class Dashboard : Bindable
     private void Attach(Account account)
     {
         Accounts.Add(account);
-        account.PropertyChanged += (_, _) => { Changed(nameof(Summary)); Changed(nameof(SessionSummary)); };
+        account.PropertyChanged += (_, _) => Changed(nameof(SessionSummary));
         SyncCards();
     }
 
@@ -459,6 +459,6 @@ public sealed class Dashboard : Bindable
         }
         try { logs?.Append(entry); }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException)
-        { Notice = "Log files could not be written; events remain available in this session."; Changed(nameof(Notice)); }
+        { Notice = "Log files could not be written; events remain available in this session."; Changed(nameof(Notice)); Changed(nameof(HasNotice)); }
     }
 }
