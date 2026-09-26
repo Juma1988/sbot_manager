@@ -1,8 +1,8 @@
 # Current progress
 
 - Goal: prepare the current WPF sBot manager for trusted Discord sharing as a portable ZIP.
-- Current development build: `C:\Users\juma\Desktop\sBot Manager\SBotManager.exe` (self-contained, portable; published 2026-09-26). `portable.flag` and the local `data/` folder are present.
-- Current runtime: The current self-contained development build is deployed at the selected development-build folder; it includes the final automatic-clientless launch correction and Activity-log scrollbar styling.
+- Current development build: `C:\Users\juma\Desktop\sBot Manager\SBotManager.exe` (self-contained, portable; deployed 2026-09-26). It is version `0.0.2.0`; `portable.flag` and the local `data/` folder are present.
+- Current runtime: The selected development-build folder includes the automatic-clientless launch correction, Activity-log scrollbar styling, compact character-card grid, and verified lifecycle-status labels.
 - Source control: verified project source and documentation are pushed to `https://github.com/Juma1988/sbot_manager` on `main`.
 
 ## Current behavior
@@ -19,12 +19,14 @@
 - Character Settings now accepts pasted or typed local absolute `.exe` paths, alongside Browse selection.
 - Removed the redundant aggregate counts and default lifecycle notice; per-card badges beside the gear provide account state, while warnings remain visible only when needed.
 - The Activity-log scrollbar uses the app’s dark track, muted-blue thumb, mint hover state, and visible keyboard-focus border instead of the Windows-default scrollbar.
+- Character cards retain a compact two-column grid with matching horizontal/vertical spacing and show red **STOPPED**, launch/game-command phases, client-window verification, and training-control state separately. They do not fabricate login, character, EXP, or farming status.
 
 ## Verification
 
 - Current source: `dotnet build src/SBotManager/SBotManager.csproj -warnaserror` passed with zero warnings/errors after the clientless launch correction.
 - Model/native fixture smoke checks: **97 passed**, including the automatic-clientless safety block and normal Start Game when clientless synchronization is unavailable but disabled.
 - Desktop UI smoke checks: **40 passed**, including removal of the redundant workspace summary.
+- Latest card/status verification: build passed with zero warnings; **100 model/native** and **42 desktop UI** checks passed. The deployed development executable checksum matches the verified self-contained build.
 - Release preflight on 2026-09-26: **CONDITIONAL PASS** for trusted Discord sharing. The exact `v0.0.2` portable ZIP passed 40 desktop UI checks after extraction; its SHA-256 is `70E230835FD7E1DE99155D86A18832ABE6BCB473893A55547DB7B6544C99EED7`.
 
 ## Remaining verification / limitations

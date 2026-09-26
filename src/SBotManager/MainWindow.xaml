@@ -46,14 +46,14 @@
     <Grid Grid.Row="2">
     <Grid.ColumnDefinitions><ColumnDefinition Width="1.45*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
      <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled" Padding="0,0,5,0" AutomationProperties.AutomationId="CharacterColumn">
-     <ItemsControl ItemsSource="{Binding Cards}">
-      <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="2" Rows="5"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+      <ItemsControl ItemsSource="{Binding Cards}" VerticalAlignment="Top">
+       <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="2"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
       <ItemsControl.Resources>
        <DataTemplate DataType="{x:Type models:AddCard}">
         <Button Content="＋  Add account" Click="Add_Click" Height="58" Margin="0,0,8,8" VerticalAlignment="Top" Background="#182B2A" BorderBrush="#44665B" Foreground="#A1E9CB" FontSize="12" Visibility="{Binding DataContext.CanAdd, RelativeSource={RelativeSource AncestorType=ItemsControl}, Converter={StaticResource BoolVisibility}}" AutomationProperties.AutomationId="AddAccount"/>
        </DataTemplate>
        <DataTemplate DataType="{x:Type models:Account}">
-        <Border Style="{StaticResource Panel}" Padding="11" Margin="0,0,8,8" VerticalAlignment="Top">
+         <Border Style="{StaticResource Panel}" Padding="13" Margin="0,0,8,8" MinHeight="176" VerticalAlignment="Top">
          <Grid>
           <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
           <StackPanel Grid.Column="0">
@@ -66,10 +66,11 @@
              <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="17" FontWeight="SemiBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
               <TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers><DataTrigger Binding="{Binding BulkEnabled}" Value="False"><Setter Property="Foreground" Value="#667085"/><Setter Property="TextDecorations" Value="{x:Static TextDecorations.Strikethrough}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
              </TextBlock>
-             <Border Grid.Column="2" Background="#222E3C" CornerRadius="4" Padding="6,4" VerticalAlignment="Center" ToolTip="{Binding BulkAvailabilityHelp}"><TextBlock Text="{Binding CardStatus}" Foreground="{Binding CardStatusColor}" FontSize="8" FontWeight="Bold"/></Border>
+              <Border Grid.Column="2" Background="#222E3C" CornerRadius="4" Padding="6,4" VerticalAlignment="Center" ToolTip="{Binding BulkAvailabilityHelp}"><TextBlock Text="{Binding CardStatus}" Foreground="{Binding CardStatusColor}" FontSize="8" FontWeight="Bold" AutomationProperties.AutomationId="{Binding Name, StringFormat=Status{0}}" AutomationProperties.Name="{Binding CardStatus}"/></Border>
             <Button Grid.Column="3" Click="Configure_Click" Tag="{Binding}" Margin="5,0,0,0" Width="29" MinHeight="28" Padding="4" ToolTip="Character settings" AutomationProperties.AutomationId="{Binding Name, StringFormat=Configure{0}}"><TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"/></Button>
            </Grid>
-           <Grid Margin="0,6,0,5"><TextBlock Text="{Binding GameStatus}" Foreground="{StaticResource Muted}" FontSize="10"/><TextBlock Text="{Binding TrainingStatus}" Foreground="{StaticResource Muted}" HorizontalAlignment="Right" FontSize="10"/></Grid>
+            <Grid Margin="0,7,0,3"><TextBlock Text="{Binding GameStatus}" Foreground="{StaticResource Muted}" FontSize="10" AutomationProperties.AutomationId="{Binding Name, StringFormat=GameStatus{0}}" AutomationProperties.Name="{Binding GameStatus}"/><TextBlock Text="{Binding TrainingStatus}" Foreground="{StaticResource Muted}" HorizontalAlignment="Right" FontSize="10" AutomationProperties.AutomationId="{Binding Name, StringFormat=TrainingStatus{0}}" AutomationProperties.Name="{Binding TrainingStatus}"/></Grid>
+            <TextBlock Text="{Binding ClientStatus}" Foreground="{StaticResource Muted}" FontSize="10" Margin="0,0,0,4" AutomationProperties.AutomationId="{Binding Name, StringFormat=ClientStatus{0}}" AutomationProperties.Name="{Binding ClientStatus}"/>
            <Border Background="#0B180E" BorderBrush="#375D3D" BorderThickness="1" Height="17" ToolTip="{Binding ExpHelp}"><TextBlock Text="{Binding ExpText}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#B1C7B3" FontSize="9"/></Border>
            <TextBlock Text="{Binding Executable}" ToolTip="{Binding ExecutablePath}" Foreground="#9CAAC1" FontFamily="Consolas" FontSize="9" Margin="0,5,0,0" TextTrimming="CharacterEllipsis"/>
             <TextBlock Text="{Binding RecoveryText}" Foreground="{StaticResource Muted}" FontSize="9" Margin="0,4,0,0" TextTrimming="CharacterEllipsis"/>

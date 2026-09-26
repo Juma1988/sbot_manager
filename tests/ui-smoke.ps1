@@ -128,7 +128,13 @@ try {
    $column=[Math]::Round((Find-Id $script:window 'BotActionAccountA').Current.BoundingRectangle.Left,1)
    Check ((Find-Id $script:window 'BotActionAccountA').Current.BoundingRectangle.Top -gt (Find-Id $script:window 'ShowHideClientAccountA').Current.BoundingRectangle.Top) 'Per-bot Launch action appears at the bottom of the card controls'
    Check ([Math]::Round((Find-Id $script:window 'BotActionAccountB').Current.BoundingRectangle.Top,1) -eq [Math]::Round((Find-Id $script:window 'BotActionAccountA').Current.BoundingRectangle.Top,1) -and (Find-Id $script:window 'BotActionAccountB').Current.BoundingRectangle.Left -gt (Find-Id $script:window 'BotActionAccountA').Current.BoundingRectangle.Left) 'Character grid lays out two columns'
-   Check ([Math]::Round((Find-Id $script:window 'BotActionAccountC').Current.BoundingRectangle.Left,1) -eq $column -and (Find-Id $script:window 'BotActionAccountC').Current.BoundingRectangle.Top -gt (Find-Id $script:window 'BotActionAccountA').Current.BoundingRectangle.Top) 'Character grid lays out more than one row'
+    $accountAAction=(Find-Id $script:window 'BotActionAccountA').Current.BoundingRectangle
+    $accountCAction=(Find-Id $script:window 'BotActionAccountC').Current.BoundingRectangle
+    Check ([Math]::Round($accountCAction.Left,1) -eq $column -and $accountCAction.Top -gt $accountAAction.Top) 'Character grid lays out more than one row'
+    $rowPitch=$accountCAction.Top-$accountAAction.Top
+    Write-Output "Character card row pitch: $rowPitch"
+    Check ($rowPitch -le 220) 'Character card rows stay compact rather than stretching to fill the workspace'
+    Check ((Find-Id $script:window 'StatusAccountA').Current.Name -eq 'NOT CONFIGURED' -and (Find-Id $script:window 'GameStatusAccountA').Current.Name -eq 'Game: unavailable' -and (Find-Id $script:window 'ClientStatusAccountA').Current.Name -eq 'Client: unavailable') 'Unconfigured card exposes separate bot, game, and client states'
 
  # Test actual picker selection without opening the chosen executable.
   Invoke-Id $script:window 'ConfigureAccountA'; $settings=Dialog 'Character settings'

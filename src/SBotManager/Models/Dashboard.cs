@@ -241,6 +241,7 @@ public sealed class Dashboard : Bindable
     public async Task<BotResult> OpenAsync(Account a, bool recovery = false)
     {
         if (!a.CanOpen || shuttingDown || terminationMode) return new(false, "Open unavailable until the account is verified stopped and no termination is active.");
+        a.BeginLaunch();
         a.WantsRunning = true;
         if (!recovery) { a.RecoveryAttempts = 0; a.RecoverySuspended = false; }
         var launch = await RunAsync(a, () => bots.OpenAsync(a.Settings));
@@ -251,6 +252,7 @@ public sealed class Dashboard : Bindable
             if (AutoHideBots && a.CanShowHide) await RunAsync(a, () => bots.SetVisibilityAsync(a.Settings, false));
             if (AutoHideClients) QueueAutomaticClientHide(a);
         }
+        else a.SetOperationStatus(null);
         return launch;
     }
 
@@ -267,6 +269,7 @@ public sealed class Dashboard : Bindable
     {
         try
         {
+            account.SetOperationStatus("WAITING FOR GAME");
             var timeout = Stopwatch.StartNew();
             string? lastFailure = null;
             while (timeout.Elapsed < TimeSpan.FromSeconds(60))
@@ -286,10 +289,12 @@ public sealed class Dashboard : Bindable
                             return;
                         }
                     }
+                    account.SetOperationStatus("STARTING GAME");
                     var result = await bots.StartGameAsync(account.Settings);
                     if (result.Success)
                     {
                         Log(account.Name, "Info", result.Message);
+                        account.MarkStartGameCommandSent();
                         return;
                     }
                     lastFailure = result.Message;
@@ -303,7 +308,7 @@ public sealed class Dashboard : Bindable
         {
             Log(account.Name, "Warning", "Automatic Start Game failed: " + e.Message);
         }
-        finally { automaticGameStarts.Remove(account.Id); }
+        finally { account.SetOperationStatus(null); automaticGameStarts.Remove(account.Id); }
     }
     private void QueueAutomaticClientHide(Account account)
     {
@@ -338,8 +343,10 @@ public sealed class Dashboard : Bindable
             return new BotResult(false, "Training control unavailable.");
         }
         if (start) { a.RecoverySuspended = false; a.WantsRunning = true; }
+        a.SetOperationStatus(start ? "STARTING TRAINING" : "STOPPING TRAINING");
         var result = await RunAsync(a, () => bots.TrainingAsync(a.Settings, start));
         if (result.Success) await RefreshTrainingControlAsync(a, expectStartControl: !start);
+        a.SetOperationStatus(null);
         return result;
     }
     private async Task RefreshTrainingControlAsync(Account account, bool expectStartControl)
@@ -368,6 +375,11 @@ public sealed class Dashboard : Bindable
     public async Task ShowSessionBotsAsync()
     {
         foreach (var account in SessionLaunchedRunning.Where(a => a.CanShowHide)) await ShowBotAsync(account);
+    }
+    public async Task RestoreVerifiedBotWindowsAsync()
+    {
+        foreach (var account in Accounts.Where(a => a.CanShowHide).ToArray())
+            await ShowBotAsync(account);
     }
     public async Task SetAllBotsVisibilityAsync(bool visible)
     {
@@ -402,7 +414,10 @@ public sealed class Dashboard : Bindable
     public async Task<BotResult> TerminateAsync(Account a, bool force = false)
     {
         a.RecoverySuspended = true; a.WantsRunning = false; a.NotifyAll();
+        a.SetOperationStatus("STOPPING SBOT");
         var result = await RunAsync(a, () => bots.TerminateAsync(a.Settings, force), true);
+        if (result.Success) a.Apply(new ProcessSnapshot(BotState.Stopped, result.Message));
+        if (!result.Success) a.SetOperationStatus(null);
         if (result.NeedsForce) Notify?.Invoke(NotificationEvent.ForceTerminateRequired, a.Name);
         return result;
     }

@@ -13,6 +13,8 @@ public sealed class Account(AccountSettings settings) : Bindable
     private AccountSettings config = settings;
     private ProcessSnapshot snapshot = new(BotState.Checking, "Checking configured instance…");
     private bool busy;
+    private string? operationStatus;
+    private bool startGameCommandSent;
     private string lastRecoveryEvent = "No recovery events this session";
     public AccountSettings Settings => config;
     public Guid Id => config.Id;
@@ -34,20 +36,24 @@ public sealed class Account(AccountSettings settings) : Bindable
     public int RecoveryAttempts { get; set; }
     public DateTimeOffset RetryAt { get; set; }
     public DateTimeOffset? StableSince { get; set; }
-    public string Status => Busy ? "WORKING" : State switch
+    public string Status => operationStatus ?? (Busy ? "WORKING" : State switch
     {
         BotState.NotConfigured => "NOT CONFIGURED", BotState.MissingFile => "FILE MISSING",
         BotState.Checking => "CHECKING", BotState.Running => snapshot.CanStopTraining ? "TRAINING" : snapshot.CanStartTraining ? "READY" : "RUNNING",
         BotState.Stopped => "STOPPED", _ => "UNKNOWN"
-    };
-    public string StatusColor => State == BotState.Running && snapshot.CanStopTraining ? "#8EE1BE" :
+    });
+    public string StatusColor => operationStatus is not null || Busy ? "#BFC8ED" : State == BotState.Stopped ? "#F1A6A6" : State == BotState.Running && snapshot.CanStopTraining ? "#8EE1BE" :
         State == BotState.Running && snapshot.CanStartTraining ? "#BFC8ED" :
         State is BotState.Unknown or BotState.MissingFile ? "#F4CB7B" : "#A6B2C6";
     public string CardStatus => BulkEnabled ? Status : "DISABLED";
     public string CardStatusColor => BulkEnabled ? StatusColor : "#98A4B8";
     public string Detail => snapshot.Detail;
-    public string GameStatus => snapshot.CanStartGame ? "Game control verified" : "Game state not verified";
-    public string TrainingStatus => snapshot.CanStopTraining ? "Stop control verified" : snapshot.CanStartTraining ? "Start control verified" : "Training state not verified";
+    public string GameStatus => State != BotState.Running ? "Game: unavailable" : startGameCommandSent ? "Game: command sent" : snapshot.CanStartGame ? "Game: ready to start" : "Game: state unverified";
+    public string ClientStatus => State != BotState.Running ? "Client: unavailable" : snapshot.ClientWindowVisible switch
+    {
+        true => "Client: window visible", false => "Client: window hidden", _ => "Client: not verified"
+    };
+    public string TrainingStatus => State != BotState.Running ? "Training: unavailable" : snapshot.CanStopTraining ? "Training: control active" : snapshot.CanStartTraining ? "Training: ready" : "Training: state unverified";
     public string ExpText => "EXP unavailable";
     public string ExpHelp => "No verified EXP source is connected. The bar is not a zero-percent reading.";
     public string RecoveryText => !RecoveryEnabled ? "Recovery off" : RecoverySuspended ? "Recovery paused" : RecoveryAttempts >= 3 ? "Needs attention · retry limit" : $"Recovery on · {RecoveryAttempts}/3 retries";
@@ -75,7 +81,15 @@ public sealed class Account(AccountSettings settings) : Bindable
     public bool CanStartGame => !Busy && State == BotState.Running && snapshot.CanStartGame;
     public bool CanRemove => !Busy && State is BotState.Stopped or BotState.NotConfigured or BotState.MissingFile;
 
-    public void Apply(ProcessSnapshot value) { snapshot = value; NotifyAll(); }
+    public void BeginLaunch() { startGameCommandSent = false; SetOperationStatus("STARTING SBOT"); }
+    public void SetOperationStatus(string? value) { operationStatus = value; NotifyAll(); }
+    public void MarkStartGameCommandSent() { startGameCommandSent = true; operationStatus = null; NotifyAll(); }
+    public void Apply(ProcessSnapshot value)
+    {
+        snapshot = value;
+        if (value.State != BotState.Running) { startGameCommandSent = false; operationStatus = null; }
+        NotifyAll();
+    }
     public void RecordRecoveryEvent(DateTimeOffset when, string message) { lastRecoveryEvent = $"{when.ToLocalTime():HH:mm:ss} · {message}"; NotifyAll(); }
     public void Configure(AccountSettings value) { config = value; NotifyAll(); }
     public void NotifyAll() => Changed(string.Empty);

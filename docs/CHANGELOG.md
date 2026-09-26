@@ -3,6 +3,9 @@
 ## 2026-09-26
 
 ### Changed
+- When Manager exits while retaining bots, it now restores every verified sBot window—including disabled and pre-existing bots—before closing. Silkroad client windows remain untouched.
+- Reduced character-card minimum height to **176 px**. After a verified successful termination, a card now immediately changes to red **STOPPED** instead of waiting for the next process refresh.
+- Compacted the character-card grid by removing its fixed stretched rows, made cards slightly larger, and added separate truthful bot-launch, Start Game, client-window, and training-control statuses. Stopped cards now use red status text.
 - Set the next public-release version to **0.0.2** across application metadata, visible version labels, installer defaults, and release documentation.
 - Moved each account card's primary action to the bottom and made it switch between **Launch** for stopped bots and **Terminate** for verified running bots.
 - Added a persisted avatar double-click toggle for per-character bulk eligibility. Disabled cards are dimmed, struck through, and labeled **DISABLED** while retaining individual controls; they are skipped by bulk commands.

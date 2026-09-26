@@ -235,10 +235,9 @@ public partial class MainWindow : Window
         }
         else
         {
-            // Leave session-launched bots running, but restore only their verified
-            // sBot windows before Manager stops controlling them. Client windows
-            // are intentionally not touched.
-            await dashboard.ShowSessionBotsAsync();
+            // Leave bots running, but restore every verified sBot window before
+            // Manager stops controlling them. Client windows are intentionally not touched.
+            await dashboard.RestoreVerifiedBotWindowsAsync();
         }
         if (failures.Count > 0)
             tray.ShowBalloonTip(5000, "i1988 - sBot manager", "Could not close: " + string.Join("; ", failures), Forms.ToolTipIcon.Warning);

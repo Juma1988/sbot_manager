@@ -46,7 +46,13 @@ Check(statusCard.Status == "READY" && statusCard.TrainingActionText == "Start tr
 statusCard.Apply(new(BotState.Running, "Test", CanStopTraining: true));
 Check(statusCard.Status == "TRAINING" && statusCard.TrainingActionText == "Stop training" && statusCard.PrimaryActionText == "Terminate", "Training card keeps Terminate separate from the training action");
 statusCard.Apply(new(BotState.Stopped, "Test"));
-Check(statusCard.BulkEnabled && statusCard.CardStatus == "STOPPED" && statusCard.PrimaryActionText == "Launch", "Stopped card remains individually launchable while enabled for bulk actions");
+Check(statusCard.BulkEnabled && statusCard.CardStatus == "STOPPED" && statusCard.StatusColor == "#F1A6A6" && statusCard.PrimaryActionText == "Launch", "Stopped card is red and remains individually launchable while enabled for bulk actions");
+statusCard.BeginLaunch();
+Check(statusCard.Status == "STARTING SBOT", "Card reports the sBot launch lifecycle phase");
+statusCard.Apply(new(BotState.Running, "Test", CanStartGame: true, ClientWindowVisible: null));
+Check(statusCard.GameStatus == "Game: ready to start" && statusCard.ClientStatus == "Client: not verified", "Card separates verified game readiness from unverified client state");
+statusCard.MarkStartGameCommandSent();
+Check(statusCard.Status == "RUNNING" && statusCard.GameStatus == "Game: command sent", "Card reports a sent Start Game command without claiming client login");
 var xar = dashboard.Accounts[0];
 Check(!xar.CanStartGame, "Start Game unavailable until bot verified running");
 dashboard.SaveAccount(xar, xar.Settings with { ExecutablePath = @"C:\Bots\AccountA\bot.exe" });
@@ -164,6 +170,11 @@ var existingBot = exitDashboard.Accounts[1];
 await exitDashboard.OpenAsync(sessionBot);
 exitFake.Running.Add(existingBot.Id); await exitDashboard.RefreshAsync();
 Check(exitDashboard.SessionLaunchedRunning.Single() == sessionBot, "Bot already running at Manager startup is not session-launched");
+exitFake.Hidden[sessionBot.Id] = true; exitFake.Hidden[existingBot.Id] = true;
+exitDashboard.SetBulkEnabled(existingBot, false);
+await exitDashboard.RestoreVerifiedBotWindowsAsync();
+Check(!exitFake.Hidden.ContainsKey(sessionBot.Id) && !exitFake.Hidden.ContainsKey(existingBot.Id),
+    "Exit restoration shows every verified bot window, including disabled and pre-existing bots");
 exitFake.ForceCloseRequired = true;
 var exitFailures = await exitDashboard.CloseSessionLaunchedAsync();
 Check(exitFailures.Count == 0 && sessionBot.State == BotState.Stopped && existingBot.State == BotState.Running && exitFake.Terminations == 2,
@@ -180,7 +191,7 @@ await dashboard.TrainingAsync(xar, true);
 Check(fake.Starts == 1 && !dashboard.CanBulk, "Training blocked during termination");
 await dashboard.TerminateAsync(xar);
 dashboard.EndTermination();
-Check(fake.Terminations == 1 && xar.State == BotState.Stopped && !xar.WantsRunning, "Terminate clears recovery intent");
+Check(fake.Terminations == 1 && xar.State == BotState.Stopped && xar.CardStatus == "STOPPED" && !xar.WantsRunning, "Terminate immediately clears recovery intent and shows STOPPED");
 
 dashboard.SaveAccount(xar, xar.Settings with { RecoveryEnabled = true });
 await dashboard.OpenAsync(xar);
