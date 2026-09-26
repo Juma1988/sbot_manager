@@ -41,6 +41,6 @@
 - A running process is not proof a character is connected or farming.
 - A sent Start Game command is not proof that Silkroad connected; no supported game/EXP telemetry is integrated.
 - Real client pairing is limited to verified windows in the launched sBot process tree.
-- Root is not a Git repository. No commits or publication requested.
+- Source control: Git repository on `main`, tracking `https://github.com/Juma1988/sbot_manager.git`.
 - Verification is developer/model/UI evidence, not an independent release QA gate.
 - Activity-log mutations are serialized so concurrent lifecycle tasks cannot race its bounded in-memory collection.

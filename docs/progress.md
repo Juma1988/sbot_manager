@@ -3,6 +3,7 @@
 - Goal: live C#/.NET 10 WPF sBot farm manager for up to 10 configured accounts.
 - Current development build: `C:\Users\juma\Desktop\sBot Manager\SBotManager.exe` (self-contained, portable; published 2026-09-26). `portable.flag` and the local `data/` folder are present.
 - Current runtime: The updated development build is running from the selected development-build folder.
+- Source control: verified project source and documentation are pushed to `https://github.com/Juma1988/sbot_manager` on `main`.
 
 ## Current behavior
 
