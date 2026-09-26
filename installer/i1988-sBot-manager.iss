@@ -1,7 +1,7 @@
 ; Build with Inno Setup 6 after running installer\build-release.ps1.
 ; Keep AppId stable across versions so upgrades replace the existing installation.
 #ifndef MyAppVersion
-  #define MyAppVersion "0.0.1"
+  #define MyAppVersion "0.0.2"
 #endif
 
 #define MyAppName "i1988 - sBot manager"

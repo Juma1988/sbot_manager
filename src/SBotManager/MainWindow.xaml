@@ -34,8 +34,8 @@
        <Border Height="1" Background="#293245" Margin="0,0,0,14"/>
        <Button Content="Settings…" Click="Settings_Click" AutomationProperties.AutomationId="OpenSettings" ToolTip="Workspace behavior and Windows notifications"/>
        <Button Content="Help / safety" Click="Guide_Click" Background="Transparent" Margin="0,8,0,0" ToolTip="How commands, recovery and safety work"/>
-       <Button Content="About &amp; support" Click="About_Click" Background="Transparent" Margin="0,8,0,0" AutomationProperties.AutomationId="OpenAbout" ToolTip="Version 0.0.1 · Support the project"/>
-       <Button Content="Exit manager…" Click="Exit_Click" Background="Transparent" Margin="0,8,0,0" AutomationProperties.AutomationId="ExitManager" ToolTip="Version 0.0.1 · Exit behavior follows Settings"/>
+        <Button Content="About &amp; support" Click="About_Click" Background="Transparent" Margin="0,8,0,0" AutomationProperties.AutomationId="OpenAbout" ToolTip="Version 0.0.2 · Support the project"/>
+        <Button Content="Exit manager…" Click="Exit_Click" Background="Transparent" Margin="0,8,0,0" AutomationProperties.AutomationId="ExitManager" ToolTip="Version 0.0.2 · Exit behavior follows Settings"/>
      </StackPanel>
     </Grid>
    </Border>
@@ -91,8 +91,9 @@
      <Grid>
       <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
        <TextBlock Text="Activity log" FontSize="18" FontWeight="SemiBold"/>
-      <ScrollViewer Grid.Row="1" Margin="0,12,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AutomationProperties.AutomationId="ActivityPanel">
-       <ItemsControl ItemsSource="{Binding Activity}"><ItemsControl.ItemTemplate><DataTemplate>
+       <ScrollViewer Grid.Row="1" Margin="0,12,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AutomationProperties.AutomationId="ActivityPanel">
+        <ScrollViewer.Resources><Style TargetType="ScrollBar" BasedOn="{StaticResource AppScrollBar}"/></ScrollViewer.Resources>
+        <ItemsControl ItemsSource="{Binding Activity}"><ItemsControl.ItemTemplate><DataTemplate>
         <Border BorderBrush="#273144" BorderThickness="0,0,0,1" Padding="0,11" MouseLeftButtonDown="LogEntry_MouseLeftButtonDown" ToolTip="Double-click to copy this entry">
          <StackPanel>
           <Grid><StackPanel Orientation="Horizontal"><TextBlock Text="{Binding Account}" Foreground="{Binding Color}" FontWeight="SemiBold" FontSize="11"/><TextBlock Text="{Binding Severity}" Foreground="{Binding Color}" FontSize="10" Margin="10,1,0,0"/></StackPanel><TextBlock Text="{Binding Time}" Foreground="{StaticResource Muted}" FontFamily="Consolas" FontSize="11" HorizontalAlignment="Right" Margin="0,0,8,0"/></Grid>

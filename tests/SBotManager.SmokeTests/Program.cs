@@ -133,6 +133,16 @@ await clientlessSafetyDashboard.OpenAsync(clientlessSafetyDashboard.Accounts.Sin
 await WaitUntilAsync(() => clientlessSafetyDashboard.Activity.Any(entry => entry.Message.StartsWith("Automatic Start Game blocked:")), "automatic Start Game safety block");
 Check(clientlessSafetyFake.GameStarts == 0, "Automatic Start Game fails closed when clientless state cannot be confirmed");
 
+var normalLaunchStore = new SettingsStore(Path.Combine(root, "normal-launch"));
+var normalLaunchFake = new FakeBots { ClientlessSyncFails = true };
+var normalLaunchDashboard = new Dashboard(normalLaunchStore, normalLaunchFake, clock: () => now, delay: _ => Task.CompletedTask);
+normalLaunchDashboard.SaveAccount(null, new(Guid.NewGuid(), "Normal", @"C:\Bots\Normal\bot.exe"));
+await normalLaunchDashboard.RefreshAsync();
+await normalLaunchDashboard.OpenAsync(normalLaunchDashboard.Accounts.Single());
+await WaitUntilAsync(() => normalLaunchFake.GameStarts == 1, "automatic Start Game without clientless synchronization");
+Check(normalLaunchFake.AutoClientless == 0 && normalLaunchFake.GameStarts == 1,
+    "Automatic Start Game proceeds when automatic clientless is off and its native control is unavailable");
+
 var retryStore = new SettingsStore(Path.Combine(root, "delayed-game-start"));
 var retryFake = new FakeBots { GameStartFailClicks = 2 };
 var retryDashboard = new Dashboard(retryStore, retryFake, clock: () => now, delay: _ => Task.CompletedTask);

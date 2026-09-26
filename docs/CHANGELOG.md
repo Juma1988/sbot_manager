@@ -3,6 +3,7 @@
 ## 2026-09-26
 
 ### Changed
+- Set the next public-release version to **0.0.2** across application metadata, visible version labels, installer defaults, and release documentation.
 - Moved each account card's primary action to the bottom and made it switch between **Launch** for stopped bots and **Terminate** for verified running bots.
 - Added a persisted avatar double-click toggle for per-character bulk eligibility. Disabled cards are dimmed, struck through, and labeled **DISABLED** while retaining individual controls; they are skipped by bulk commands.
 - Removed the **LIVE PROCESS CONTROLS** workspace label.
@@ -11,12 +12,15 @@
 - The **sBot executable** field now accepts pasted or typed local absolute `.exe` paths and validates them as they change.
 - Removed the redundant workspace aggregate account summary and default lifecycle notice; per-card status badges remain, and the notice region is reserved for actual warnings.
 - Automatic clientless writes an explicit desired checkbox state instead of relying on a toggle when enabled. With the preference off, Launch leaves sBot's native clientless setting untouched and starts the game normally; failed clientless synchronization blocks Start Game only when the opt-in feature is on.
+- Restyled the **Activity log** scrollbar with the app’s dark bordered track and mint hover thumb, replacing the system-default appearance.
 
 ### Technical
 - Serialized in-memory activity-log writes to prevent concurrent lifecycle tasks racing its bounded collection.
 - Verified with 96 model/native checks and 40 desktop UI checks, then published and started the updated self-contained development build at `C:\Users\juma\Desktop\sBot Manager`.
 - Initialized source control and published the verified project source and documentation to the GitHub `main` branch.
-- The final clientless-launch correction is verified in source and committed, but awaits deployment to the running development app.
+- Deployed the final clientless-launch correction and Activity-log scrollbar styling to the self-contained development build at `C:\Users\juma\Desktop\sBot Manager`.
+- Rebuilt the repository README with current product positioning, app artwork, feature and safety summaries, setup, installer, verification, and support guidance.
+- Documented GitHub Releases as the supported distribution channel for ZIPs/installers; GitHub Packages is reserved for developer dependencies.
 
 ## 2026-09-25
 
