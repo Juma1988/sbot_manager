@@ -141,7 +141,12 @@ public sealed class WindowsBotService : IBotService
         // accidentally invert an already-correct checkbox when its prior state is unknown.
         if (NativeWindows.SendMessageTimeout(button, 0x00F1, enabled ? 1 : 0, 0, 0x0002, 1500, out _) == 0)
             return new BotResult(false, "Automatic clientless state could not be set. Run Manager at the same elevation as sBot.");
-        if (NativeWindows.SendMessageTimeout(button, 0x00F0, 0, 0, 0x0002, 1500, out var checkedState) == 0 || (checkedState != 0) != enabled)
+        // Some sBot builds accept BM_SETCHECK but do not return BM_GETCHECK
+        // across their privilege boundary. A delivered explicit set is enough to
+        // continue Launch; a readable mismatch is still a definite failure.
+        if (NativeWindows.SendMessageTimeout(button, 0x00F0, 0, 0, 0x0002, 1500, out var checkedState) == 0)
+            return new BotResult(true, "Automatic clientless state was set; sBot did not provide a readable confirmation.");
+        if ((checkedState != 0) != enabled)
             return new BotResult(false, "Automatic clientless state could not be confirmed. Run Manager at the same elevation as sBot.");
         return new BotResult(true, enabled
             ? "Enabled sBot automatic clientless after game entry; its existing delay was preserved."

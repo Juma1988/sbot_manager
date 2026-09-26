@@ -10,7 +10,7 @@
 - Turning off **Switch to clientless after game entry** now explicitly disables sBot's verified native setting for running bots and future Manager launches.
 - The **sBot executable** field now accepts pasted or typed local absolute `.exe` paths and validates them as they change.
 - Removed the redundant workspace aggregate account summary and default lifecycle notice; per-card status badges remain, and the notice region is reserved for actual warnings.
-- Automatic Start Game now fails closed when the native clientless checkbox cannot be set and verified. The setting writes an explicit desired checkbox state instead of relying on a toggle.
+- Automatic clientless writes an explicit desired checkbox state instead of relying on a toggle. Automatic Start Game proceeds when that set command is delivered even if an sBot build cannot report its checkbox state; it still blocks on a failed set or a readable mismatch.
 
 ### Technical
 - Serialized in-memory activity-log writes to prevent concurrent lifecycle tasks racing its bounded collection.
