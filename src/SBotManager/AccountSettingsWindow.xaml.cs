@@ -20,12 +20,16 @@ public partial class AccountSettingsWindow : Window
         ValidatePath();
     }
     private void ValidatePath() => Validation.Text = string.IsNullOrEmpty(PathInput.Text) ? "Not configured" : File.Exists(PathInput.Text) ? "Ready · executable exists" : "File missing";
+    private void PathInput_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+    {
+        if (Validation is not null) ValidatePath();
+    }
     private void Browse_Click(object sender, RoutedEventArgs e)
     {
         var picker = new OpenFileDialog { Title = "Choose the character's sBot executable", Filter = "Windows executable (*.exe)|*.exe", CheckFileExists = true, Multiselect = false };
         var folder = Path.GetDirectoryName(PathInput.Text);
         if (!string.IsNullOrEmpty(folder) && Directory.Exists(folder)) picker.InitialDirectory = folder;
-        if (picker.ShowDialog(this) == true) { PathInput.Text = picker.FileName; ValidatePath(); }
+        if (picker.ShowDialog(this) == true) PathInput.Text = picker.FileName;
     }
     private void Copy_Click(object sender, RoutedEventArgs e)
     {

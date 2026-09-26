@@ -15,6 +15,7 @@
 - Double-click an account avatar to exclude/include it in bulk actions. Disabled accounts are visibly dimmed, struck through, and labeled **DISABLED**, but retain individual controls.
 - The character workspace scrolls normally without showing a scrollbar; the **LIVE PROCESS CONTROLS** label has been removed.
 - Saving automatic clientless now synchronizes its native sBot setting both on and off for running bots; future Manager launches synchronize it before Start Game.
+- Character Settings now accepts pasted or typed local absolute `.exe` paths, alongside Browse selection.
 
 ## Verification
 

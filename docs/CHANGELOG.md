@@ -8,6 +8,7 @@
 - Removed the **LIVE PROCESS CONTROLS** workspace label.
 - Hid the character-list scrollbar while preserving normal scrolling.
 - Turning off **Switch to clientless after game entry** now explicitly disables sBot's verified native setting for running bots and future Manager launches.
+- The **sBot executable** field now accepts pasted or typed local absolute `.exe` paths and validates them as they change.
 
 ### Technical
 - Serialized in-memory activity-log writes to prevent concurrent lifecycle tasks racing its bounded collection.

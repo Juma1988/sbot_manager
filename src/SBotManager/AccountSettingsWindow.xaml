@@ -5,7 +5,8 @@
   <TextBlock Text="Character name" Margin="0,20,0,7"/>
   <TextBox x:Name="NameInput" MaxLength="24" AutomationProperties.AutomationId="CharacterName"/>
   <TextBlock Text="sBot executable" Margin="0,16,0,7"/>
-  <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="100"/></Grid.ColumnDefinitions><TextBox x:Name="PathInput" IsReadOnly="True" VerticalContentAlignment="Center" AutomationProperties.AutomationId="ExecutablePath"/><Button Grid.Column="1" Content="Browse…" Click="Browse_Click" Margin="8,0,0,0" AutomationProperties.AutomationId="BrowseExecutable"/></Grid>
+  <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="100"/></Grid.ColumnDefinitions><TextBox x:Name="PathInput" TextChanged="PathInput_TextChanged" VerticalContentAlignment="Center" ToolTip="Paste or type a local absolute .exe path" AutomationProperties.AutomationId="ExecutablePath"/><Button Grid.Column="1" Content="Browse…" Click="Browse_Click" Margin="8,0,0,0" AutomationProperties.AutomationId="BrowseExecutable"/></Grid>
+  <TextBlock Text="Paste or type a local absolute .exe path, or use Browse. Web links and network paths are not supported." Foreground="{StaticResource Muted}" FontSize="11" Margin="0,5,0,0" TextWrapping="Wrap"/>
   <Grid Margin="0,7,0,10"><TextBlock x:Name="Validation" Foreground="#F4CB7B" VerticalAlignment="Center"/><Button Content="Copy path" Click="Copy_Click" HorizontalAlignment="Right" Padding="10,5" MinHeight="30"/></Grid>
   <CheckBox x:Name="RecoveryInput" Content="Recover this bot if its process disappears" Margin="0,8,0,8"/>
   <TextBlock Text="Recovery is opt-in: up to 3 retries, with increasing delays. Reopening sBot may activate its own automatic login/training settings. Stop training and Terminate pause manager recovery." Foreground="{StaticResource Muted}" TextWrapping="Wrap" LineHeight="19"/>

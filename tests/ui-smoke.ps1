@@ -136,7 +136,7 @@ try {
  Start-Sleep -Milliseconds 500
  Dialog-Click $picker 2; Wait-DialogGone "Choose the character's sBot executable"
  Get-Window; $settings=Dialog 'Character settings'
- Check ((Find-Id $settings 'ExecutablePath').GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).Current.Value -eq '') 'File-picker cancellation preserves original empty path'
+  Check ((Find-Id $settings 'ExecutablePath').GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).Current.Value -eq '' -and !(Find-Id $settings 'ExecutablePath').GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).Current.IsReadOnly) 'Executable path accepts pasted or typed local paths; picker cancellation preserves the original value'
 Invoke-Id $settings 'BrowseExecutable'; $picker=Dialog "Choose the character's sBot executable"
   Start-Sleep -Milliseconds 400
   $edit=[NativeDialogTest]::FileNameEditor([IntPtr]$picker.Current.NativeWindowHandle)
