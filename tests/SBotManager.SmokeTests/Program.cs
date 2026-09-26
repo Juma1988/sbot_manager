@@ -126,6 +126,7 @@ Check(launchFake.AutoClientless == 2, "Turning off automatic clientless synchron
 var clientlessSafetyStore = new SettingsStore(Path.Combine(root, "clientless-safety"));
 var clientlessSafetyFake = new FakeBots { ClientlessSyncFails = true };
 var clientlessSafetyDashboard = new Dashboard(clientlessSafetyStore, clientlessSafetyFake, clock: () => now, delay: _ => Task.CompletedTask);
+clientlessSafetyDashboard.SetPreferences(clientlessSafetyDashboard.CloseToTray, clientlessSafetyDashboard.AutoHideBots, clientlessSafetyDashboard.AutoHideClients, false, false, false, StartupLaunchMode.LaunchOneByOne, true);
 clientlessSafetyDashboard.SaveAccount(null, new(Guid.NewGuid(), "Safety", @"C:\Bots\Safety\bot.exe"));
 await clientlessSafetyDashboard.RefreshAsync();
 await clientlessSafetyDashboard.OpenAsync(clientlessSafetyDashboard.Accounts.Single());

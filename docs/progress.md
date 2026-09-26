@@ -15,7 +15,7 @@
 - Double-click an account avatar to exclude/include it in bulk actions. Disabled accounts are visibly dimmed, struck through, and labeled **DISABLED**, but retain individual controls.
 - The character workspace scrolls normally without showing a scrollbar; the **LIVE PROCESS CONTROLS** label has been removed.
 - Saving automatic clientless now synchronizes its native sBot setting both on and off for running bots; future Manager launches synchronize it before Start Game.
-- Automatic Start Game uses an explicit native clientless setting before launch. It proceeds if that setting command is delivered even when sBot cannot report checkbox state back, but blocks on a failed command or a readable mismatch.
+- With automatic clientless On, Start Game uses an explicit native setting and blocks on a failed set or readable mismatch. With it Off, Launch leaves the native clientless setting untouched and starts the game normally.
 - Character Settings now accepts pasted or typed local absolute `.exe` paths, alongside Browse selection.
 - Removed the redundant aggregate counts and default lifecycle notice; per-card badges beside the gear provide account state, while warnings remain visible only when needed.
 
@@ -30,3 +30,4 @@
 - After Windows restart, optionally verify the configured `SBotManager Startup` scheduled task behavior on the real machine; automated checks did not register it.
 - XP/game-health telemetry remains unavailable until a supported sBot API/export/log source is verified. No memory scanning or fabricated values.
 - The existing v0.0.1 ZIP is an earlier standalone artifact; it is not the current development build and was not repackaged in this session.
+- The final automatic-clientless launch correction has passed verification but is **not yet deployed** because the user is pausing work with the prior development app still running. Next action: exit Manager, publish to `C:\Users\juma\Desktop\sBot Manager`, then reopen and verify a Launch starts the game.
