@@ -15,6 +15,7 @@
 - Restyled the **Activity log** scrollbar with the app’s dark bordered track and mint hover thumb, replacing the system-default appearance.
 
 ### Technical
+- Built and verified the self-contained `v0.0.2` portable ZIP for trusted Discord sharing; the exact extracted artifact passed 40 desktop UI checks and has SHA-256 `70E230835FD7E1DE99155D86A18832ABE6BCB473893A55547DB7B6544C99EED7`.
 - Serialized in-memory activity-log writes to prevent concurrent lifecycle tasks racing its bounded collection.
 - Verified with 96 model/native checks and 40 desktop UI checks, then published and started the updated self-contained development build at `C:\Users\juma\Desktop\sBot Manager`.
 - Initialized source control and published the verified project source and documentation to the GitHub `main` branch.

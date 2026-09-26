@@ -1,6 +1,6 @@
 # Current progress
 
-- Goal: assess whether the current WPF sBot manager candidate is ready for public publication.
+- Goal: prepare the current WPF sBot manager for trusted Discord sharing as a portable ZIP.
 - Current development build: `C:\Users\juma\Desktop\sBot Manager\SBotManager.exe` (self-contained, portable; published 2026-09-26). `portable.flag` and the local `data/` folder are present.
 - Current runtime: The current self-contained development build is deployed at the selected development-build folder; it includes the final automatic-clientless launch correction and Activity-log scrollbar styling.
 - Source control: verified project source and documentation are pushed to `https://github.com/Juma1988/sbot_manager` on `main`.
@@ -25,7 +25,7 @@
 - Current source: `dotnet build src/SBotManager/SBotManager.csproj -warnaserror` passed with zero warnings/errors after the clientless launch correction.
 - Model/native fixture smoke checks: **97 passed**, including the automatic-clientless safety block and normal Start Game when clientless synchronization is unavailable but disabled.
 - Desktop UI smoke checks: **40 passed**, including removal of the redundant workspace summary.
-- Release preflight on 2026-09-26: **BLOCKED**. Build passed with zero warnings, and the model/native (97) and desktop UI (40) suites passed. The self-contained `win-x64` preflight executable has SHA-256 `8C503F4E4462318CACE80F2E39AA91BA112D0026C52F6DAF77DE98E1DF783511`.
+- Release preflight on 2026-09-26: **CONDITIONAL PASS** for trusted Discord sharing. The exact `v0.0.2` portable ZIP passed 40 desktop UI checks after extraction; its SHA-256 is `70E230835FD7E1DE99155D86A18832ABE6BCB473893A55547DB7B6544C99EED7`.
 
 ## Remaining verification / limitations
 
@@ -34,4 +34,4 @@
 - The existing v0.0.1 ZIP is an earlier standalone artifact; it is not the current development build and was not repackaged in this session.
 - The final automatic-clientless launch correction is deployed. Next action: reopen `C:\Users\juma\Desktop\sBot Manager\SBotManager.exe` and verify a Windows-startup launch starts each sBot's client.
 - Release version: **0.0.2** is configured across application, installer, and release documentation; build metadata verifies `0.0.2.0`.
-- Publication blockers: commit/tag version `0.0.2`, produce and preserve the installer/checksum, configure code signing, validate the exact packaged artifact on a clean Windows machine, then rerun artifact-based QA. Details: `docs/qa/release-readiness-2026-09-26.md`.
+- Remaining recommended checks: launch the ZIP on a clean/second Windows machine and perform a live sBot/Silkroad workflow check. These do not block limited trusted Discord sharing. Details: `docs/qa/release-readiness-2026-09-26.md`.
